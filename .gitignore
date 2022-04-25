@@ -37,3 +37,9 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# data
+data/
+
+# Other resources
+docs/not_on_git/
