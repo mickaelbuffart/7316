@@ -1,0 +1,410 @@
+---
+title: "7316 - Introduction to R"
+subtitle: "Module 4: Correction of the exercise"
+author: "Teacher: Mickaël Buffart (mickael.buffart@hhs.se)"
+output:
+  word_document:
+    reference_docx: "assets/sse-word-template.docx"
+    toc: false
+    toc_depth: 2
+monofont: 'Consolas'
+---
+
+
+In this assignment you will replicate the main findings from the paper "Female Socialization: How Daughters Affect Their Legislator Fathers' Voting on Women's". Along the way you will also replicate a figure.
+
+Important: The **README** file contains a description of the variables in the dataset.
+
+# Replicate Figure 1
+
+Figure 1 shows the mean NOW score (a score that measures how closely a politician's votes align with recommendations of the National Organization of Women) by party and number of female children.
+
+* Make sure the relevant variables have the correct data type.
+
+```{r}
+# First, we load the data
+df <- rio::import("data/basic.dta")
+
+# party is a factor variable, 3 levels (see str of df):
+#  1: dem
+#  2: rep
+#  3: indep
+df$party <- as.factor(df$party)
+levels(df$party) <- c("Democrat", "Republican", "Independent")
+
+# congress is also a factor
+df$congress <- as.factor(df$congress)
+```
+
+* Recode all the independent politicians to Democrat (there's only one).
+
+```{r}
+# Recode independent
+df$party[df$party == "Independent"] <- "Democrat"
+
+# Drop the unused level
+df$party <- droplevels(df$party)
+```
+
+
+* Remove observations where the number of daughters is missing.
+
+```{r}
+sum(is.na(df$ngirls))
+# --> 4 missing values
+
+# Removing obs where missing
+df <- df[!is.na(df$ngirls),]
+```
+
+* NOW scores are only available for the $105^{th}$ congress. Select this subset.
+
+```{r}
+# Removing obs where missing
+df_105 <- df[c(df$congress == "105"),]
+```
+
+Figure 1 contains interesting information but it is not very pretty. Let's make it look a bit more colorful.
+
+* Use *ggplot2* to replicate figure 1 (with slightly different coloring)
+
+1. Filter the data for the subset of observation from the $105^{th}$ congress with all politicians that have either 2 or 3 children
+
+```{r}
+df_105_2 <- df_105[c(df_105$totchi == 2 |
+                       df_105$totchi == 3),]
+
+```
+
+
+2. Create a ggplot object with that data set.
+
+```{r, fig.width=4, fig.height=2.25, dpi=1200}
+library(ggplot2)
+
+g <- ggplot(df_105_2)
+
+```
+
+3. Add an *aes* layer with the x dimension being the number of daughters and the y dimension being the total NOW score. Set the *col* and *fill* option to *party* because we want Republicans and Democrats colored differently.
+
+```{r, fig.width=4, fig.height=2.25, dpi=1200}
+g <- g + aes(x = ngirls, y = nowtot,
+             color = party, fill = party)
+
+```
+
+4. Add a geometry layer: use `stat_summary`, inside which you choose the function "mean" and the geometry "bar". Also set `inherit.aes` to `TRUE`, such that the filling and shading parameters are taken over from the `aes` layer.
+
+```{r, fig.width=4, fig.height=2.25, dpi=1200}
+# Following the instruction, this is what is expected:
+g <- g + stat_summary(fun = "mean",
+                      geom = "bar",
+                      inherit.aes = TRUE)
+
+# You could have as well written this, for the same result
+#  g <- g + geom_bar(stat = "summary", fun = "mean")
+
+```
+
+5. Add a facet grid that splits the chart along `party` (column) and `totchi` (rows). Use the `margins` option to generate the bar chart that combines democrats and republicans.
+
+```{r}
+g <- g + facet_grid(cols = vars(party),
+                    rows = vars(totchi),
+                    margins = "party")
+
+```
+
+6. Add a color layer using *scale_color_manual* where the breaks are the parties (incl. "(all)") and the values are the colors you want to assign each party. Use the *aesthetics* option to specify that you want to change both the color and the filling.
+
+```{r}
+g <- g + scale_colour_manual(breaks = c("Democrat", "Republican", "(all)"), 
+                             values = c("blue",     "red",        "black"),
+                             aesthetics = c("colour", "fill")) 
+
+```
+
+* Display the figure.
+
+```{r, fig.width=5.5, fig.height=3.5, dpi=1200}
+g
+```
+
+This is just an example of how this could look like. Feel free to play around with the parameters to make the plot prettier.
+
+```{r, fig.width=5.5, fig.height=3.5, dpi=1200}
+# For example, you could add labels
+g + labs(x = "Number of female children",
+         y = "Mean NOW score")
+```
+
+# Replicate Table 2 
+
+## Data Preparation
+
+* Create all extra variables that you need for the regression. Don't forget the two fixed effects for *region* and *number of children*. (Fixed effects in this context means simply coding these variables as factors)
+
+```{r}
+# We need the square length of service
+df$srvlng2 <- df$srvlng^2
+
+# a dummy for republicans
+df$republican <- c(df$party == "Republican")
+
+# region is a factor
+df$region <- as.factor(df$region)
+
+# we also need a factor for the N of children
+df$nchild_fac <- as.factor(df$totchi)
+
+```
+
+* Check the data type of the variables that you will need. Convert them if necessary.
+
+```{r}
+# Some of the dummy are coded as numeric (0/1), not as logical. We could recode them, but for R, it doesn't matter. We can keep them as they are.
+
+# Others, we recoded above already.
+
+```
+
+* Recode the Religion as a factor variable that it aligns with the regressors in the table. Set *protestant* as the reference group.
+
+```{r}
+# First, setting religion as factor
+df$rgroup <- factor(df$rgroup,
+                    levels = c(0, 1, 2, 3, 4),
+                    labels = c("No Religion", "Protestant",
+                               "Catholic", "Other Christian",
+                               "Other Religion"))
+
+# relevel allows you to set a reference level (the baseline)
+df$rgroup <- relevel(df$rgroup, "Protestant")
+
+# Age is squared
+df$age2 <- df$age^2
+
+
+```
+
+## Regressions
+
+Table 2 shows the coefficients from the model $Score = \beta_0 + \beta_1 ngirls + \beta_2 female + \beta_3 White + ... + \beta_13 Dem.vote.share$ where score is either the NOW for the $105^{th}$ Congress or the AAUW score for each congress from the $105^{th}$ to the $108^{th}$.
+
+* Run the regression from the first column where the dependent variable is the total NOW score using the $lm()$ function. **Hint:** if you selected only the relevant variables beforehand, you can just type $nowtot \sim .$ as the formula.
+
+* Save the regression output as an object.
+
+```{r}
+# Select 105th again with the new variable from df
+df_105 <- df[df$congress == "105",]
+
+# Select the relevant subset of variables
+#  Note: the variables will appear in your regression model in the order you list them:
+data_reg <- df_105[, c("nowtot",
+                       "ngirls",
+                       "female", "white", "republican",
+                       "age", "age2",
+                       "srvlng", "srvlng2", 
+                       "rgroup", "demvote",
+                       "nchild_fac", "region")]
+
+model_now <- lm(nowtot ~ ., data = data_reg)
+```
+
+
+* Write a loop that runs the regression with the AAUW score as the dependent variable for each congress separately.
+
+```{r}
+# create a vector of the congress
+congress <- unique(df$congress)
+
+# Creating an empty list that we will append with 
+list_models_aauw <- list()
+
+# The loop
+for (i in 1:length(congress)) {
+  # Select the congress one by one
+  specific_congress <- df[df$congress == congress[i],]
+  
+  # Select variables in the model. Note: the DV is "aauw" here
+  data_reg <- specific_congress[, c("aauw",
+                                    "ngirls",
+                                    "female", "white", "republican",
+                                    "age", "age2",
+                                    "srvlng", "srvlng2", 
+                                    "rgroup", "demvote",
+                                    "nchild_fac", "region")]
+  
+  # Fit model
+  model_tmp <- lm(aauw ~ ., data = data_reg)
+  
+  # We append the list for each new model
+  list_models_aauw[[i]] <- model_tmp
+}
+
+```
+
+* Combine the NOW score regression and the AAUW regressions into one table using *stargazer*.
+* omit the region and number of children fixed effects from the output
+* keep the number of observations as the only statistic
+* set the type to html
+
+```{r, results = 'hide'}
+
+stargazer::stargazer(
+  # NOW score regression
+  model_now,
+  
+  # AAUW regressions
+  list_models_aauw,
+  
+  # omit the region and number of children fixed effects from the output
+  omit = c("region", "nchild_fac"),
+  
+  # keep the number of observations as the only statistic
+  keep.stat = c("n"),
+  
+  # set the type to html
+  type = 'html',
+  
+  # save it somewhere
+  out = 'output_table.html'
+)
+
+```
+
+* *Hint:* set *results = 'asis'* in the code chunk header to properly knit the html code.
+
++ This hint is useful when you use Rmarkdown to produce documents. We will see what it means during the next class.
+
++ To go further, you can play with the design of your table: change the style, add labels, try different options...
+
++ **Note:** Once you saved your table into `.html`, you can open the file into Word, and modify the table, or copy-paste it into any Word document, as a Word table.
+
+
+# Table 4
+
+The NOW score is composed of several sub-scores for different women's rights issues, such as reproductive rights, equal pay or violence against women. For each issue, politicians are rated either zero (does not agree with NOW on this issue) or one (does agree).
+
+Take a look at Table 4. In each row we run the regression from above but we replace the dependent variable $nowtot$ with a sub component $now1$ to $now20$. Each row then shows the coefficient of $ngirls$ from that regression. 
+
+* Use the subset from the $105^{th}$ congress.
+
+```{r}
+# We saved it in df_105.
+```
+
+* Write a loop that runs the regressions from Table 4. Each regression should be the same model but with a different now subscore on the left hand side (now1 - now20).
+
+```{r}
+# Creating an empty list
+list_models_now <- list()
+
+# We fit models from now1 to now20
+for (i in 1:20) {
+  dv <- df_105[, paste0("now", i)]
+  
+  # Select the ivs in the model. Note: the DV is OUT of the df
+  data_reg <- df_105[, c("ngirls",
+                         "female", "white", "republican",
+                         "age", "age2",
+                         "srvlng", "srvlng2", 
+                         "rgroup", "demvote",
+                         "nchild_fac", "region")]
+  
+  # Here, it is more tricky, because we do not know the name of the DV,
+  #  from now1 to now20. But we can extract it from the dataset while
+  #  concatening "now" and the increment i.
+  model_tmp <- lm(dv ~ . , data = data_reg)
+  
+  # We append the list for each new model
+  list_models_now[[i]] <- model_tmp
+}
+
+```
+
+* Extract the coefficients of $ngirls$ from the regressions. You can use $tidy()$, which allows you to extract the estimates from each model object. 
+
+* Extract the standard errors of $ngirls$ from the regressions. You can again use $tidy()$ but this time get the $std.errors$. 
+
+```{r}
+# You don't need to use tidy here, you can simply use R base
+
+# Setting up the vectors
+ngirls_coef <- numeric()
+ngirls_se <- numeric()
+
+# 20 coefficient for 20 models
+for (i in 1:20) {
+  # Extract the output of the model
+  tmp <- summary(list_models_now[[i]])
+  
+  # Extracting the coefficient of ngirls from tmp
+  estim <- tmp$coefficients["ngirls", "Estimate"]
+  
+  # Extracting the coefficient of ngirls from tmp
+  std_err <- tmp$coefficients["ngirls", "Std. Error"]
+  
+  # Append the vectors
+  ngirls_coef <- c(ngirls_coef, estim)
+  ngirls_se <- c(ngirls_se, std_err)
+}
+
+```
+
+* Calculate the significance of each coefficient using a standard t-test $\frac{coefficient}{st.error}$. Add a column where you print one asterisk for significance at the 10 % level, two for significance at the 5 % level and three asterisks for 1% significance. 
+
+```{r}
+# No significance: empty character
+significance <- character(length = 20)
+
+# Sig level, 10%
+significance[c(ngirls_coef / ngirls_se) > 1.65] <- "*"
+
+# Sig level, 5%
+significance[c(ngirls_coef / ngirls_se) > 1.96] <- "**"
+
+# Sig level, 1%
+significance[c(ngirls_coef / ngirls_se) > 2.58] <- "***"
+
+# Warning: order is important, otherwise, previous condition is cancelled
+#  by the next one.
+```
+
+* Bind the coefficients and standard errors into one table as in Table 4 in the paper. Round the coefficients and standard errors to three digits after the decimal.
+
+* Add a column where you just number each score (unfortunately, the data does not contain labels for the now scores)
+
+```{r}
+# Round the coefficients and standard errors to 3 digits
+ngirls_coef <- round(ngirls_coef, 3)
+ngirls_se <- round(ngirls_se, 3)
+
+# Bind in a table
+table_4 <- data.frame(now_score = paste0("now", 1:20),
+                      coefficient = ngirls_coef,
+                      std.error = ngirls_se,
+                      significance = significance)
+```
+
+* Print the table using *stargazer*. Set *summary = FALSE* to print the data frame instead of the summary statistics.
+
+
+```{r, results='hide'}
+# To make is look more like in the article, we need to concatenate
+#   the significant and the standard errors
+
+table_4$std.error <- paste0("(", table_4$std.error, ")",
+                            table_4$significance)
+
+# Significance can be removed: it is reported with standard errors
+table_4$significance <- NULL
+
+# print using stargazer
+stargazer::stargazer(table_4,
+          summary = FALSE, 
+          type = 'html',
+          out = 'table_4.html')
+```
