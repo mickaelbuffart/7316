@@ -45,7 +45,8 @@ library(plotly)
 ```{r, eval=FALSE}
 plot_ly(df,
         x = ~iv,     
-        y = ~dv)
+        y = ~dv,
+        type="scatter")
 
 ```
 
