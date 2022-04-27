@@ -11,7 +11,7 @@ The course is an introduction to the R statistical programming language, focusin
 * **Module 3:** [Loops, conditions, functions, text, & scrapping](docs/7316_module_3.pdf).
 * **Module 4:** [Producing visuals & outputs](docs/7316_module_4.pdf).
 * **Module 5:** [Project management & RMarkdown](docs/7316_module_5.pdf).
-* **Module 6:** [Optimization, speed, style, and elegance](docs/7316_module_6.pdf).
+* **Module 6:** [Producing interactive visuals and outputs](docs/7316_module_6.pdf).
 
 ## Practice material
 
