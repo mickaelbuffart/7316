@@ -20,7 +20,7 @@ The course is an introduction to the R statistical programming language, focusin
 * **Module 3:** [practice](docs/7316_module_3_practice.pdf), [solutions](docs/7316_module_3_solutions.pdf).
 * **Module 4:** [practice](docs/7316_module_4_practice.pdf), [solutions](docs/7316_module_4_solutions.pdf).
 * **Module 5:**  _see course content_.
-* **Module 6:**  _see course content_.
+* **Module 6:**  practice (_see course content_), [solutions to the shiny app](7316_module_6_shiny.R).
 
 ## References
 
@@ -34,6 +34,9 @@ The course is an introduction to the R statistical programming language, focusin
 
 * [**StackOverflow**](https://stackoverflow.com/questions/tagged/r)
 * [**RStudio Cheat Sheets**](https://www.rstudio.com/resources/cheatsheets/)
+* On [**Plotly**](https://plotly.com/r/)
+* On [**Shiny**](https://shiny.rstudio.com/tutorial/)
+* [**Shinyapp.io**](https://www.shinyapps.io/)
 
 * * *
 
