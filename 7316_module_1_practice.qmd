@@ -1,0 +1,25 @@
+---
+title: "7316 - Introduction to data analysis with R"
+subtitle: "MODULE 1: Getting used to R - Practice."
+author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
+format:
+  docx:
+    reference-doc: "./assets/sse-quarto-template.docx"
+toc: false
+number-sections: true
+number-depth: 5
+code-line-numbers: true
+monofont: 'Consolas'
+---
+
+# MODULE 1: Getting used to R
+
+During the first module, we tried to get used to the R environment and tools, and load data. To get ready for the second module, **before the next class:**
+
+1. Set up the R environment on your laptop and set up your global settings as you see fit. Explore the options and interface.
+
+2. Go through this material again, install the required packages, and try to load and save your own data.
+
+3. Read the outline of Module 2.
+
+
