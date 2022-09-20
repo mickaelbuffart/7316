@@ -6,16 +6,21 @@ The course is an introduction to the R statistical programming language, focusin
 
 ## Course content
 
-* **Module 1:** [Getting used to R](docs/7316_module_1_course.pdf).
-* **Module 2:** [Playing with Data](docs/7316_module_2_course.pdf).
-* **Module 3:** Describing data.
-* **Module 4:** Modeling data.
-* **Module 5:** A more advanced playground.
-* **Module 6:** Interactive visuals and tools.
+* **Module 1:** [R basics](docs/7316_module_1.pdf).
+* **Module 2:** [Data manipulation in R](docs/7316_module_2.pdf).
+* **Module 3:** [Loops, conditions, functions, text, & scrapping](docs/7316_module_3.pdf).
+* **Module 4:** [Producing static visuals & outputs](docs/7316_module_4.pdf).
+* **Module 5:** [Project management & RMarkdown](docs/7316_module_5.pdf).
+* **Module 6:** [Producing interactive visuals and outputs](docs/7316_module_6.pdf).
 
 ## Practice material
 
-* **Module 1:** [practice](docs/7316_module_1_practice.pdf)
+* **Module 1:** _see course content_.
+* **Module 2:** [practice](docs/7316_module_2_practice.pdf), [solutions](docs/7316_module_2_solutions.pdf).
+* **Module 3:** [practice](docs/7316_module_3_practice.pdf), [solutions](docs/7316_module_3_solutions.pdf).
+* **Module 4:** [practice](docs/7316_module_4_practice.pdf), [solutions](docs/7316_module_4_solutions.pdf).
+* **Module 5:**  _see course content_.
+* **Module 6:**  practice (_see course content_), [solutions to the shiny app](7316_module_6_shiny.R).
 
 ## References
 

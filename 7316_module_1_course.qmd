@@ -18,8 +18,6 @@ monofont: 'Consolas'
 
 # MODULE 1: Getting used to R
 
-I make a change.
-
 ## R & Statistical Programming
 
 Unlike spreadsheet applications (like *Excel*) or point-and-click statistical analysis software (like *SPSS*), statistical programming software is based around script files, in which users write a series of commands to be performed.
