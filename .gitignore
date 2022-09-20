@@ -42,8 +42,4 @@ vignettes/*.pdf
 data/
 
 # Other resources
-docs/not_on_git/
-final/*
-
-7316_final_assignment_solution.Rmd
-
+not_on_git/
