@@ -10,8 +10,6 @@ toc-depth: 3
 toc-title: "Table of contents"
 number-sections: true
 number-depth: 5
-code-line-numbers: true
-monofont: 'Consolas'
 ---
 
 \newpage

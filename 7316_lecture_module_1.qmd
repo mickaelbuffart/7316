@@ -10,8 +10,6 @@ toc-depth: 3
 toc-title: "Table of contents"
 number-sections: true
 number-depth: 5
-code-line-numbers: true
-monofont: 'Consolas'
 ---
 
 \newpage
@@ -104,7 +102,7 @@ Internet is full of resources about `R`. `R` is so massively used that anything 
 
 [^1]: RStudio and R are two different things. R is a programming language for statistical computing developed in the beginning of the nineties, and updated until today. RStudio is an Integrated Development Environment developed by RStudio PBC around 2010 by Hadley Wickham and his team. At the same time, they developed multiple convenient packages, and wrote books to make R convenient and accessible. It is after the work of Hadley Wickham that R became what it is today.
 
-![RStudio cheatsheet example.](assets/images/01_01_cheatsheet.png){fig-align="center" width="400"}
+![RStudio cheatsheet example.](assets/images/01_01_cheatsheet.png){fig-align="center" width="350"}
 
 -   **DataCamp:** <https://www.datacamp.com/courses/free-introduction-to-r>
 
@@ -184,7 +182,7 @@ RStudio is an integrated development environment (IDE). This means that in addit
 
 There are four parts in the RStudio screen. They can be rearranged as it pleases you through `Tools` \> `Global options` \> `Pane layout`.
 
-![The RStudio Graphical User Interface (GUI).](assets/images/01_02_rstudio_gui.png){fig-align="center" width="400"}
+![The RStudio Graphical User Interface (GUI).](assets/images/01_02_rstudio_gui.png){#01_02_rstudio_gui fig-align="center" width="400"}
 
 1.  The **scripts** pane is a text editor. This is where you read and write the script files. They can be `.R` files, containing R code (equivalent of `.do` files in Stata), `.Rmd` or `.qmd` files to write documents (equivalent of jupyter notebooks in Python), or files from other languages than are inter-operable with RStudio: C++, python, Stata, and many others... In general, you will work with `.R` files.
 
@@ -343,7 +341,7 @@ remotes::install_github("user/repository")
 
 where `user` is the name of the user on github who posted the package, and `repository` is the name of the package on github.
 
-![Github package example](assets/images/02_01_github_package.png){fig-align="center" width="400"}
+![Github package example](assets/images/01_03_github_package.png){#01_03_github_package fig-align="center"}
 
 ### Using functions from a package in your scripts
 
@@ -398,7 +396,7 @@ pisa_spss <- rio::import("data/CY07_MSU_SCH_QQQ.sav")
 
 -   after you ran the two commands above, you should see the two objects `pisa_sas` and `pisa_spss`, in the `Environment` tab of RStudio: this means that they are properly loaded in your environment. In this example, the data files are loaded as `dataframe` objects: these are tables containing variables. You can visualize the content of the objects by clicking on the small table at the end of the corresponding line in your `Environment` tab.
 
-![Visualize a dataset in RStudio](assets/images/01_02_loading_dataset.png){fig-align="center" width="450"}
+![Visualize a dataset in RStudio](assets/images/01_04_loading_dataset.png){#01_04_loading_dataset fig-align="center"}
 
 -   the first part `data/`, is not part of the filenames: it is the folder where your data files are located in your project directory.
 
@@ -521,7 +519,7 @@ Once you installed github Desktop, you can start cloning repositories on your co
 
     b.  In the local path, choose where you want to clone your repository on your computer.
 
-![Clone a repository](assets/images/05_02_github_clone.png){alt="Clone a repository" fig-align="center" width="400"}
+![Clone a repository](assets/images/01_05_github_clone.png){#01_05_github_clone alt="Clone a repository" fig-align="center" width="1000"}
 
 -   Now, you can find the local copy of your repository in the local path you chose.
 
@@ -535,7 +533,7 @@ If you start a new project, you need to create a new repository on Github. The e
 
 2.  Click on **New**
 
-![Create a new repository](assets/images/05_01_github_newrepo.png){fig-align="center" width="400"}
+![Create a new repository](assets/images/01_06_github_newrepo.png){#01_06_github_newrepo fig-align="center"}
 
 3.  Supply GitHub with a repository name (*i.e.* this is the name of your working directory; it cannot contain space or special characters)
 
@@ -555,7 +553,7 @@ That's it! You can now clone a local copy of your repository, and start populate
 
 After you created an RStudio project in your local repository, you should see the following files:
 
-![Content of your local repository](assets/images/05_03_git_local_repo.png){fig-align="center" width="400"}
+![Content of your local repository](assets/images/01_07_git_local_repo.png){#01_07_git_local_repo fig-align="center"}
 
 **Note** that `.git` and `.R.Rproj.user` are hidden and may not appear on your screen. In any case, you should NEVER modify the content of those folder, or you might loose control of your changes.
 
@@ -571,13 +569,13 @@ After you created an RStudio project in your local repository, you should see th
 
 -   You can also do that with any other file or folder in your local repository on which you do not want to track changes.
 
-![The .gitignore file.](assets/images/05_04_git_gitignore.png){fig-align="center" width="400"}
+![The .gitignore file.](assets/images/01_08_git_gitignore.png){#01_08_git_gitignore fig-align="center"}
 
 #### Committing changes in Github Desktop
 
 Once you made a few changes in your repository (like, editing the `.gitignore` file), you can open Github Desktop again, and you will see that your current repository list the files you have change.
 
-![Commit a change](assets/images/05_05_git_desktop.png){fig-align="center" width="400"}
+![Commit a change](assets/images/01_09_git_desktop.png){#01_09_git_desktop fig-align="center"}
 
 -   On the down-left corner, after you wrote a description of your changes, you can commit them. All the changes you commit will permanently appear in the history tab.
 

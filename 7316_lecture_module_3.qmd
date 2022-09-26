@@ -28,7 +28,15 @@ One of the strong points of R is creating very high-quality data visualization. 
 
 The main package for publication-quality static data visualization in R is [`ggplot2`](https://ggplot2.tidyverse.org/), which is part of the tidyverse collection of packages. With `ggplot2` you control all the elements of your graphs, from the data you visualize and the way you represent it, to the style of the graph and the quality of the output (high-resolution...).
 
-![Example of ggplot2 graph, with SSE stylesheet](assets/images/04_01_graph_example.png){fig-align="center" width="400"}
+```{r}
+#| echo: false
+#| label: fig-03_01_graph_example
+#| fig-cap: "Example of ggplot2 graph, with SSE stylesheet"
+#| fig-align: "center"
+#| fig-width: 4
+
+knitr::include_graphics("assets/images/03_01_graph_example.png")
+```
 
 The workhorse function of ggplot2 is `ggplot2::ggplot()`. The `gg` stands for "*grammar of graphics*". In each `ggplot()` call, the appearance of the graph is determined by specifying:
 
@@ -54,12 +62,11 @@ library(ggplot2)
 Then, you can plot data. Let's use, for example, `graph_reg.Rds` (available on Canvas, in the module 3 data file).
 
 ```{r}
+#| label: fig-simpleplot
+#| fig-cap: "A simple scatterplot"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| label: fig-simpleplot
-#| fig-cap-location: top
-#| fig-cap: "A simple scatterplot"
 #| dpi: 1200
 
 df <- rio::import("data/graph_reg.Rds")
@@ -86,12 +93,11 @@ ggplot(df) +
 -   Graphs can be extensively customized using additional arguments inside of elements, or with additional functions. For example, you may want to **color the element by group**:
 
 ```{r}
+#| label: fig-withcolor
+#| fig-cap: "Adding colors"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| label: fig-withcolor
-#| fig-cap-location: top
-#| fig-cap: "Adding colors"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -104,12 +110,11 @@ ggplot(df) + aes(x = iv,
 -   Or you want to combine it with different shapes, in case you print in black and white:
 
 ```{r}
+#| label: fig-withshapes
+#| fig-cap: "Adding shapes"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| label: fig-withshapes
-#| fig-cap-location: top
-#| fig-cap: "Adding shapes"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -123,12 +128,11 @@ ggplot(df) + aes(x = iv,
 Now, if you are unhappy with the choice of color or shapes, you can customize them:
 
 ```{r}
+#| label: fig-manualshapes
+#| fig-cap: "Manual colors and shapes"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| label: fig-manualshapes
-#| fig-cap-location: top
-#| fig-cap: "Manual colors and shapes"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -152,12 +156,11 @@ ggplot(df) + aes(x = iv,
 If you have a continuous scale to color, you may want to add gradient.
 
 ```{r}
+#| label: fig-gradientcolors
+#| fig-cap: "Gradients of colors"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| label: fig-gradientcolors
-#| fig-cap-location: top
-#| fig-cap: "Gradients of colors"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv, 
@@ -173,10 +176,11 @@ ggplot(df) + aes(x = iv,
 Sometimes, you would like to use a customize scale for the axis:
 
 ```{r}
+#| label: fig-customscales
+#| fig-cap: "Custom scales"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Custom scales"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -193,10 +197,11 @@ ggplot(df) + aes(x = iv,
 You can also change the name of axis, for example, using full labels:
 
 ```{r}
+#| label: fig-customlabels
+#| fig-cap: "Custom labels"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Custom labels"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -213,10 +218,11 @@ ggplot(df) + aes(x = iv,
 -   **Note** that you have to indicate both `color` and `shape` in your graph to change the title of your legend, because you graph include colors and shapes. If you change only one, the legen will be repeated twice: once with the new label you wrote, one with the variable name. Example:
 
 ```{r}
+#| label: fig-wronglegend
+#| fig-cap: "Wrongly assigned shape legend"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Wrongly assigned shape legend"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -234,10 +240,11 @@ ggplot(df) + aes(x = iv,
 To plot a straight line somewhere on your graph, you can use `geom_vline()` (vertical) or `hline` (horizontal):
 
 ```{r}
+#| label: fig-verticallines
+#| fig-cap: "Vertical and horizontal lines"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Vertical and horizontal lines"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -258,10 +265,11 @@ ggplot(df) + aes(x = iv,
 You can also plot a line across the graph, indicated slope and intercept, using `abline()`, or you can plot a regression lines fitted to your data, using `geom_smooth()`:
 
 ```{r}
+#| label: fig-ablines
+#| fig-cap: "Abline and regression lines"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Abline and regression lines"
 #| dpi: 1200
 
 # With abline (not fitted line)
@@ -292,10 +300,11 @@ The parameter of `geom_smooth`:
 For continuous variables, you may want to plot an histogram with `geom_histogram()`.
 
 ```{r}
+#| label: fig-histograms
+#| fig-cap: "Drawing histograms"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Drawing histograms"
 #| dpi: 1200
 
 ggplot(df) + 
@@ -308,10 +317,11 @@ ggplot(df) +
 `bar_plot()` is the same, but for discrete variables. By default, a bar plot uses frequencies for its values, but you can use values from a column by specifying `stat = "identity"` inside `geom_bar()`.
 
 ```{r}
+#| label: fig-barplots
+#| fig-cap: "Drawing barplots"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Drawing barplots"
 #| dpi: 1200
 
 # Bar plot with frequency
@@ -332,12 +342,13 @@ ggplot(tmp) +
 Sometimes, you may want to save a graph for later use, or for update. With R, it is possible: a graph is an object that can be manipulated as any other object. For example, in the first example above, instead of repeating twice, the same code, we could have assigned the scatterplot to an object and added colors to that object. Example:
 
 ```{r}
-#| fig-height: 2
-#| fig-align: "center"
+#| label: fig-withoutcol
 #| fig-cap: 
 #|   - "without colors"
 #|   - "colors added"
 #| layout-ncol: 2
+#| fig-align: "center"
+#| fig-height: 2.25
 #| dpi: 1200
 
 # Assigning ggplot object in the environment
@@ -360,10 +371,11 @@ graph_2
 I placed the two figures above side by side, but they are two different figures. Sometimes, you may want to show a grid of figures, for example, n scatterplots of the same variables, per group (instead of using colors or shapes). You can do this with `facet_wrap`. For example, reusing `graph_1` from above:
 
 ```{r}
+#| label: fig-facetwrap
+#| fig-cap: "Facet wrap"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Facet wrap"
 #| dpi: 1200
 
 graph_1 + facet_wrap(~group, ncol = 2)
@@ -379,10 +391,11 @@ Another option to affect the appearance of the graph is to use **themes**, which
 -   To apply a theme, just add `+ themename()` to your ggplot graphic, or `+ ggthemes::themename()`.
 
 ```{r}
+#| label: fig-changingtheme
+#| fig-cap: "Changing theme"
+#| fig-align: "center"
 #| fig-width: 4
 #| fig-height: 2.25
-#| fig-align: "center"
-#| fig-cap: "Changing theme"
 #| dpi: 1200
 
 ggplot(df) + aes(x = iv,
@@ -496,8 +509,8 @@ Often, in your report, you simply want to insert a table with the mean and stand
 
 ```{r}
 #| label: tbl-vtable1
-#| tbl-cap-location: top
 #| tbl-cap: "Using vtable without options"
+#| tbl-cap-location: top
 
 vtable::st(wages, out = "kable")
 ```
@@ -592,7 +605,7 @@ This course was written with Quarto. You can find the corresponding `.qmd` files
 
 -   A popup shows up to ask enter the document Title and Author, as well as what type of document you want to create.
 
-![New RMarkdown file](assets/images/05_06_new_rmd.png){fig-align="center" width="400"}
+![New RMarkdown file](assets/images/03_02_new_rmd.png){#03_02_new_rmd fig-align="center"}
 
 -   **Note** that TeX is required to generate pdf document. Also, generating pdf directly will often require combining Markdown with LaTex. Unless you already know and use LaTeX, this is overly complicated for no reason: I would rather advice to generate Word document, and save them as pdf from Word if you want pdf.
 
@@ -602,7 +615,7 @@ This course was written with Quarto. You can find the corresponding `.qmd` files
 
 Once you chose *Word*, and clicked **OK**, a visual editor appears, with an example code, as on the figure bellow:
 
-![New Quarto file](assets/images/05_07_rmarkdown_default.png){fig-align="center" width="400"}
+![New Quarto file](assets/images/03_03_rmarkdown_default.png){#03_03_rmarkdown_default fig-align="center"}
 
 The quarto visual editors contains 3 different types of blocks
 
@@ -618,7 +631,7 @@ The content of the .qmd file is in fact a combination or R and Markdown code (th
 
 The YAML metadata define the general properties of your document, including the appearance and the output format. Bellow, the figure shows the options I used to generate the module 2 course document. The blue parts (in quotes) are the values, the brown parts are possible options.
 
-![Some YAML options in quarto](assets/images/yaml.png){fig-align="center" width="529"}
+![Some YAML options in quarto](assets/images/03_04_yaml.png){#03_04_yaml fig-align="center"}
 
 #### Common output options
 
@@ -648,7 +661,7 @@ After this, you can simply type your output document. You can adjust the design 
 
 Now, if you want to write R code and display the output in your document, you need to insert a new code chunk by clicking on `Insert` \> `Code chunk` \> `R`. An empty chunk will then appear, as shown bellow:
 
-![Example of empty code chunk](assets/images/code_chunk.png)
+![Example of empty code chunk](assets/images/03_05_code_chunk.png){#03_05_code_chunk}
 
 In the code chunk, you can type and run code, just as in an R script.
 
@@ -656,15 +669,15 @@ In the code chunk, you can type and run code, just as in an R script.
 
 There are several output options you can specify for how R code and the code output are expressed in reports. These options are expressed bellow the red `{r}` declaration at the top of the chunk, on new lines (one line per option).
 
--   `#| echo: FALSE`: the R code will not be displayed in the output document (but potentially the output of the code execution depending on other chunk options).
+-   `#| echo: false`: the R code will not be displayed in the output document (but potentially the output of the code execution depending on other chunk options).
 
--   `#| eval: FALSE`: the code inside the chunk will not be executed (*i.e.* there won't be an output), but the code is displayed in the output document.
+-   `#| eval: false`: the code inside the chunk will not be executed (*i.e.* there won't be an output), but the code is displayed in the output document.
 
 -   `#| results: "hide"`: the code will be executed, but the output of the execution will not be displayed in the output document.
 
--   `#| include: FALSE`: the code will be executed, but nor the code, nor the output of the execution will be shown in the output document.
+-   `#| include: false`: the code will be executed, but nor the code, nor the output of the execution will be shown in the output document.
 
--   `#| warning: FALSE` / `#| message: FALSE`: do not display warnings or messages associated with the R code.
+-   `#| warning: false` / `#| message: false`: do not display warnings or messages associated with the R code.
 
 -   `#| fig-width:`, `#| fig-height:`, `#| fig-align: "center"` will be useful options in case the code chunk is generating a figure (with `ggplot2`, for example). `#| fig-cap:` is useful to define the figure title, and `#| dpi:` determines the resolution of the figure (a higher value means a better resolution, but also a more heavy file).
 
