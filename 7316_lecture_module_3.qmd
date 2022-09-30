@@ -511,8 +511,10 @@ Often, in your report, you simply want to insert a table with the mean and stand
 #| label: tbl-vtable1
 #| tbl-cap: "Using vtable without options"
 #| tbl-cap-location: top
+wages <- Ecdat::Wages1
 
 vtable::st(wages, out = "kable")
+
 ```
 
 -   This function is very handy. You can use it to generate a table compatible with word, that you can use directly in your thesis.

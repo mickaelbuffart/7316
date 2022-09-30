@@ -1,0 +1,441 @@
+---
+title: "7316 - Introduction to data analysis with R"
+subtitle: "MODULE 4: Modeling data."
+author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
+format:
+  docx:
+    reference-doc: "./assets/sse-quarto-template.docx"
+toc: true
+toc-depth: 3
+toc-title: "Table of contents"
+number-sections: true
+number-depth: 5
+---
+
+\newpage
+
+# MODULE 4: Modeling data
+
+In the module 3, we have seen how to describe data with static visuals and with descriptive statistics, including correlation tables. In this module, we will cover how to model data in R with common models, and how to display the results.
+
+## R Formulæ
+
+In R, to estimate a model, you need formulæ. A formula is an R object that simply states the equation representing the relationship you are trying to model. As a simple example, let us assume you would like to estimate an OLS model described by the following equation:
+
+$$
+\operatorname{Y} = \alpha + \beta_{1}\operatorname{X_1} + \beta_{2}\operatorname{X_2} + \epsilon
+$$
+
+In R, you would write **the formul**a as: `Y ~ X1 + X2`. You can write formulæ for all kinds of mathematical models. Because the formula is an R object, just as any object, you can save it in your environment, change its type on the fly, manipulate it, etc. For example, assign the formula with `myf <- Y ~ X1 + X2`.
+
+### Formula syntax:
+
+-   The left-hand side and the right-hand side are separated with `~`. Example: `Y ~ X`
+
+-   In a normal linear model, the independent variables are separated with `+`. Example: `Y ~ X1 + X2` .
+
+-   You can summarize all the variables in a dataframe with a `.`. For example, `Y ~ .` is the formula to regress `Y` on any of the other variables in your dataframe of interest.
+
+-   For the rest, I provide bellow some example of formulæ and the equivalent equation:
+
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Formula           | Equation                                                                                                                                     | Note                                                                                                                                                                                                                  |
++:=================:+:============================================================================================================================================:+:======================================================================================================================================================================================================================+
+| `Y ~ X1 + X2`     | $\operatorname{Y} = \alpha + \beta_1\operatorname{X_1} + \beta_2\operatorname{X_2} + \epsilon$                                               | Linear model                                                                                                                                                                                                          |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `Y ~ .`           | $\operatorname{Y} = \alpha + \beta_1\operatorname{X_1} + \beta_2\operatorname{X_2} + \epsilon$                                               | If our dataframe contains only `Y`, `X1`, and `X2`, `Y ~ .` is the same as `Y ~ X1 + X2`.                                                                                                                             |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `Y ~ X1 + X2 - 1` | $\operatorname{Y} = \beta_1\operatorname{X_1} + \beta_2\operatorname{X_2} + \epsilon$                                                        | `-` is used to remove something from the equation. `1` stands for the intercept. It is also possible to remove a variable, as below. You could as well force including the intercept in the equation by adding `+ 0`. |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `Y ~ . - X2`      | $\operatorname{Y} = \alpha + \beta_1\operatorname{X_1} + \epsilon$                                                                           | The formula means: include all the variables in the dataframe, and remove `X2`.                                                                                                                                       |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `Y ~ X + I(X^2)`  | $\operatorname{Y} = \alpha + \beta_1\operatorname{X} + \beta_2\operatorname{X^2} + \epsilon$                                                 | Quadratic effect                                                                                                                                                                                                      |
+|                   |                                                                                                                                              |                                                                                                                                                                                                                       |
+|                   |                                                                                                                                              | In the formula, the function I( ) stands for as-is. If you forget it, R will believe X is included twice in the model and remove the second occurrence.                                                               |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `Y ~ X1*X2`       | $\operatorname{Y} = \alpha + \beta_1\operatorname{X_1} + \beta_2\operatorname{X_2} + \beta_3\operatorname{X_1}\operatorname{X_2} + \epsilon$ | Interacting effect and main effects                                                                                                                                                                                   |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `Y ~ X1:X2`       | $\operatorname{Y} = \alpha + \beta_{1}\operatorname{X_1}\operatorname{X_2} + \epsilon$                                                       | Interacting effect without the main effects                                                                                                                                                                           |
++-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+: Example of formulæ
+
+Because you can manipulate formulæ as a normal R object, this means you can also update them. Let's take an example. Imagine that you are trying to run 4 OLS regression and produce the following table:
+
+![Example of OLS regression](assets/images/04_01_example_OLS.png){fig-align="center" width="448"}
+
+You could either write each model and equation one by one, with the risk, if you have many models or variables, or making typos or forgetting one term, or you can update your formulæ based on the previous ones, as follow:
+
+```{r}
+# the four formulae of the models in the table above
+model_1 <- Y ~ C1 + C2 + C3
+model_2 <- update(model_1, . ~ . + X1)
+model_3 <- update(model_1, . ~ . + X2)
+model_4 <- update(model_2, . ~ . + X2)
+
+```
+
+## OLS regression in R
+
+Being able to reproduce equations is not enough. To obtain the output above, you also need to estimate models. For example, the basic method of performing an OLS regression in R is to the use the [`lm()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/lm) function. To fit an OLS model, you can just call the `lm()` function. Once you have fitted the model, you can visualize it with the `summary()` function, or store it in an object, or use it for prediction, extracting residuals, etc.
+
+To fit the model 1 above, using OLS regressions, write:
+
+```{r}
+# Loading data.You can find ols_dataset on Canvas
+df <- rio::import("./data/ols_dataset.xlsx")
+
+# Fitting
+fit_1 <- lm(Y ~ C1 + C2 + C3, data = df)
+
+# You could as well use the formula that we assigned to model_1:
+fit_1 <- lm(model_1, data = df)
+
+```
+
+-   Note that we assigned the fitted model (generated with `lm()`) into `fit_1`. You can then save it in an `.Rds` file, display the results, extract residuals, etc.
+
+-   To display the fitted model, use:
+
+```{r, eval=FALSE}
+summary(fit_1)
+```
+
+-   The ouptut will be:
+
+```{r, echo=FALSE}
+summary(fit_1)
+```
+
+-   Note that some measures of diagnostics, such as the R2, the F-statistic, or the distribution of residuals, are also available in the output of `summary()`.
+-   You could also extract residuals, fitted values, etc.. Bellow, I assign them to new variables into the dataframe.
+
+```{r}
+# Extract the fitted values
+df$fitted <- fit_1$fitted.values
+
+# Extract the residuals of the models
+df$resid <- fit_1$residuals
+
+```
+
+### Diagnostic checking for OLS regression
+
+Saving the residuals, the fitted values, or other parameters, may be useful for diagnostic checking of your models.
+
+#### Plotting diagnostics
+
+-   Using what we have see last time, we can plot the actual and the fitted values:
+
+```{r}
+#| label: fig-plotdiagnostic
+#| fig-cap: "Ploting diagnostic"
+#| fig-align: "center"
+#| fig-width: 5
+#| fig-height: 3
+#| dpi: 1200
+
+library(ggplot2)
+
+ggplot(df) + aes(y = Y, x = C1) +
+  geom_point() +
+  geom_segment(aes(xend = C1, yend = fitted), size = 0.2) +
+  ggthemes::theme_clean()
+
+```
+
+-   The `lm()` function contains also a method for creating diagnostic visuals in base R, that can be displayed as ggplot using `ggfortify`. `ggfortify` is a package to convert automatic plots into plots that are compatible with `ggplot2` functions.
+
+    -   The visual diagnostic are useful to assess linearity (*residuals vs fitted*), normality of the residuals (*Normal Q-Q*), homogeneity of variance (*scale-location*), or outliers (*residuals vs leverage*).
+
+```{r}
+#| label: fig-autoplot
+#| fig-cap: "Autoplot diagnostics"
+#| fig-align: "center"
+#| dpi: 1200
+
+library(ggfortify)
+autoplot(fit_1) + ggthemes::theme_clean()
+
+```
+
+#### Some other measures of diagnostics
+
+Other diagnostics measures can easily be produced in R, either with base R, or with well known packages: cook's distance (`cooks.distance()`), variance inflation factors (`car::vif()`), normality of the residuals, and others:
+
+-   Cook's distance:
+
+```{r}
+# Extract cooks distance to detect outliers
+df$cooks <- cooks.distance(fit_1)
+```
+
+-   VIFs:
+
+```{r}
+# Display variance inflation factors (VIF) to assess multicolinearity issues
+car::vif(fit_1)
+```
+
+-   Skewness
+
+```{r}
+# Skewness
+moments::skewness(df$resid)
+```
+
+-   Kurtosis
+
+```{r}
+# Kurtosis
+moments::kurtosis(df$resid)
+```
+
+-   Jarque-Bera Normality Test
+
+```{r}
+# Jarque-Bera Normality Test
+moments::jarque.test(df$resid)
+```
+
+#### Heteroskedasticity-robust errors
+
+In practice, errors should *almost always* be specified in a manner that is heteroskedasticity and autocorrelation consistent. You can run the Breush-Pagan test for heteroskedasticity with:
+
+```{r}
+# Breush-Pagan test
+lmtest::bptest(fit_1)
+```
+
+In the example above, we do not have heteroskedasticity issues (*p-value* \> 0.05), but we still re-estimate our standard errors with robust standard errors, for the example. The [`sandwich`](https://cran.r-project.org/web/packages/sandwich/) allows for specification of heteroskedasticity-robust, cluster-robust, and heteroskedasticity and autocorrelation-robust error structures, as follow:
+
+```{r}
+# STEP 1: estimate your model
+m_example <- lm(Y ~ C1 + C2 + C3, data = df)
+
+# STEP 2: choose an alternative variance structure
+lmtest::coeftest(m_example,
+                 vcov = sandwich::vcovHC(m_example,
+                                         type = "HC1"))
+
+```
+
+-   `"HC1"` is one type of robust standard error you may want to use for the model. It is equivalent, in *Stata*, to `vce(robust)` option. Other estimators may be chosen, if more suitable in your case (default is `"HC3"`; see Long & Ervin, 2000[^1], for more information).
+
+[^1]: Long J. S., Ervin L. H. (2000). "Using Heteroscedasticity Consistent Standard Errors in the Linear Regression Model." *The American Statistician*, 54, 217--224.
+
+## Formatting regression output: stargazer
+
+We have seen, above, that you can display the estimated models with `summary()`. `summary()` is great to quickly display results in R, but it is not suitable to generate results that you want to copy-paste into reports and presentation: the formatting of the output is not compelling.
+
+A really good option for creating compelling regression and summary output tables is the [`stargazer`](https://www.rdocumentation.org/packages/stargazer/) package. `stargazer` provides ready-made tables that you can export directly in your documents. Bellow I provide an example:
+
+```{r}
+#| warning: false
+#| results: "hide"
+
+# First, let us estimate all our models
+fit_2 <- lm(model_2, data = df)
+fit_3 <- lm(model_3, data = df)
+fit_4 <- lm(model_4, data = df)
+
+# save the table in an html document, that you can open with Word
+stargazer::stargazer(fit_1, fit_2, fit_3, fit_4,
+                     type = "html",
+                     out = "table_1.html")
+
+```
+
+-   `fit_1`, `fit_2`, `fit_3`, and `fit_4` are the models (model object) you want to display side by side in the table. You can include as many models as you like, before stating the parameters of the `stargazer` function.
+-   `stargazer` is a great tool to generate nice regression tables. Unfortunately, if you generate Word documents, the output of Stargazer cannot be exported directly. The easiest way to transfer a Stargazer table into Word is:
+
+1.  Save the `stargazer` output in an html file (with `type = "html"` and `out = "filename.html"`; see previous model).
+
+2.  Open the html file that you generate into Word (you can do this through the context menu)
+
+3.  You can then copy-paste the table in a Word document.
+
+-   Looking at the options of stargazer, you will find many to adjust and customize your output tables, including design for specific journals and publications. Example:
+
+```{r}
+#| warning: false
+#| results: "hide"
+
+stargazer::stargazer(
+  # The models we want to display
+  fit_1, fit_2, fit_3, fit_4,
+  
+  # Tables and labels
+  model.numbers = FALSE,
+  align = TRUE,
+  
+  dep.var.caption  = "Dependent variable: Y",
+  dep.var.labels = " ",
+  
+  column.labels = c("Model 1", "Model 2", "Model 3", "Model 4"),
+  
+  covariate.labels = c("Control 1",
+                       "Control 2",
+                       "Control 3",
+                       "X 1",
+                       "X 2"),
+  
+  # We want 3 digits
+  digits = 3,
+  
+  # We want the style of the AER
+  #  -> Many other styles are available
+  style = "aer",
+  
+  # We can also add a custom line of information, including labels or values
+  add.lines = list(c('My line', "a value",  "again",  "3", 4)),
+
+  # html file, save in top_table
+  type = 'html',
+  out = "table_designed.html")
+
+```
+
+-   As for the descriptive statistics table that we explored in module 3, you can also choose the labels for the columns (usually, the models names) and for the rows (usually, the variables names). Be aware nonetheless that if you mix up the labels, they will appear in the order you state them (not necessarily corresponding to the correct variable you are displaying).
+
+-   Often, journals have specific guidelines on how to display tables (including, how many stars to display for p-value \< .05, how many decimals, etc.), you can choose the style with `style =`. In the example above, I chose *American Economic Review*, but other options include *American Journal of Sociology*, *Administrative Science Quarterly*, and many others.
+
+## General linear models with R
+
+Many other models, such as a logistic regression, poisson, etc., are available in the `glm` function (for *general linear models*). Everything works the same way.
+
+### Logit and Probit models
+
+-   Examples:
+
+```{r}
+
+# Logit model
+model_logistic <- glm(Y_dum ~ X1 + X2 + C1 + C2 + C3, 
+                      data = df,
+                      family = binomial(link = "logit"))
+
+# Probit model
+model_probit <- glm(Y_dum ~ X1 + X2 + C1 + C2 + C3, 
+                    data = df,
+                    family = binomial(link = "probit"))
+
+
+summary(model_logistic)
+
+```
+
+-   The functions work the same way as we have seen for `lm()`. The only difference is that you use the `family` parameter to define which family of estimate you would like to use. In the examples, we use binomial logit, or binomial probit estimates.
+
+-   As for the OLS models, you can use `stargazer` to display the results.
+
+-   Then, as for the OLS models, you can estimate robust standard errors using the same tools:
+
+```{r}
+library(sandwich)
+
+# Example of robust standard errors
+lmtest::coeftest(model_logistic, vcov. = vcovHC, type = "HC1")
+
+```
+
+### Predictions
+
+-   Logit and probit models are not displaying linear relationships. You may want to illustrate your results with predictions for specific or average cases.
+
+-   You can compute predictions with predict(), either using the original dataframe you provided to estimate the model, or any other corresponding dataset. Example:
+
+```{r}
+# Predict the output of the logistic model for 2 custom observations
+pred <- predict(model_logistic, 
+                newdata = data.frame(
+                  X1 = c(18, 19),
+                  X2 = c(mean(df$X2), mean(df$X2)),
+                  C1 = c(mean(df$C1), mean(df$C1)),
+                  C2 = c(mean(df$C2), mean(df$C2)),
+                  C3 = c(mean(df$C3), mean(df$C3))
+                 ),
+                type = "response")
+
+# Display the prediction
+pred
+
+# Compute the difference in probabilities
+diff(pred)
+
+```
+
+-   In the example above, `predict()` is used to generate prediction of the model_logistic (first argument of the function)
+
+-   With the `newdata` argument, we provide a dataframe with the case we would like to estimate. In the example I propose, the two observations are identical on all points except `X1`. `X1` varies from 18 to 19, while all other parameters are set to the average value of our dataset. Note that the average individual may not exist or be irealistic. You can choose any other--more suitable value.
+
+-   `type = "response"` indicates that we want the predictions to be on the scale of the response variable (in the case of a logit models, these are log-odds).
+
+#### Accuracy analysis
+
+-   Predicting is nice, but you may want to know how accurate where your predictions. You can compute accuracy measures for sensitivity and specificity:
+
+```{r}
+# Predict response values
+df$pred_logit <- predict(model_logistic, type = "response")
+
+# Convert probabilities into a dummy variable, as is Y_dum
+df$pred_logit <- df$pred_logit >= 0.5
+
+# Note, the confucionMatrix function requires factors as input
+caret::confusionMatrix(as.factor(df$Y_dum), 
+                       as.factor(df$pred_logit))
+
+```
+
+-   In the example above, we estimate sensitivity and specificity in 4 steps:
+
+1.  We estimate the model (this is the object called `model_logistic`)
+2.  We compute predictions (predict response valued): in the example above, we left `newdata` argument empty in the predict function. This means that the prediction will be made on the same data as we used to estimate the model. In general, you should create a train and a test sample and analyze the accuracy of your model on the test dataset only. If you do not have a test and a train dataset, you can create those by randomly splitting your original dataset into two groups (during the second module, we saw how to extract a random sample from a dataset)
+3.  The prediction of the logistic models are probabilities. But our dependent variable is `TRUE` or `FALSE`. In the example, if the predicted probability is above 50% to be `TRUE`, we state it to `TRUE`, otherwise, to `FALSE`. We could as well choose a different cutoff point.
+4.  Using the `caret::confusionMatrix()`, we estimate the accuracy of the model. Note that the confusion matrix only accepts factors (real and predicted) with the same levels as inputs. This is why we convert the logical vectors into factors with `as.factor()`.
+
+-   In the example above, the predictions are very good: we have 91% of true positive (sensitivity) and 92% of true negative (specificity).
+
+### Other `glm` models
+
+-   We have seen above examples of the glm function for logit and probit regression. Other families are possible, including poisson, gamma, quasi, quasibinomial, and quasipoisson. For the binomial, other links are possible: Cauchy CDF, log, and c-loglog. They are always estimated following the same format. Example:
+
+```{r}
+
+# Example of count data
+count_data <- Ecdat::Doctor
+
+# Poisson model
+model_poisson <- glm(doctor ~ children + access + health,
+                     data = count_data,
+                     family = poisson())
+
+summary(model_poisson)
+
+```
+
+### Using models from Stata
+
+Sometimes, you may want to use model from Stata within R, because the specific model you would like to use is better implemented in Stata (this is the case, for example, of some mixed effect models). To call a stata function from R:
+
+1.  Write your Stata script in a `.do` file. Example of a `.do` file could be (Stata code bellow):
+
+```{r, eval=FALSE}
+reg dv iv iv_2
+```
+
+2.  call the Stata file from R:
+
+```{r, eval=FALSE}
+# 1. You need to state where Stata is installed on your machine
+options("RStata.StataPath" = "\"C:\\Program Files\\Stata17\\StataSE-64\"")
+options("RStata.StataVersion" = 17)
+
+# call Stata
+RStata::stata(src = "mydofile.do", data.in = df)
+```
+
+-   where `data.in` points out to your data.frame in R, that you want to load in Stata.
+
+-   **Warning:** make sure your variable names in your data.frame are compatible with Stata. See the module 1 section on styles for more details.
