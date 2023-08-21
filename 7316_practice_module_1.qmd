@@ -1,6 +1,6 @@
 ---
-title: "7316 - Introduction to data analysis with R"
-subtitle: "MODULE 1: Getting used to R - Practice."
+title: "MODULE 1: Getting used to R - Practice"
+subtitle: "7316 - Introduction to data analysis with R"
 author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
 format:
   docx:

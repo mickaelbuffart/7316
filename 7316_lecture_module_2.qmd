@@ -1,93 +1,68 @@
 ---
-title: "7316 - Introduction to data analysis with R"
-subtitle: "MODULE 2: Playing with data!"
+title: "MODULE 2: Playing With Data!"
+subtitle: "7316 - Introduction to Data Analysis with R"
 author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
 format:
   docx:
     reference-doc: "./assets/sse-quarto-template.docx"
 toc: true
-toc-depth: 3
+toc-depth: 5
 toc-title: "Table of contents"
 number-sections: true
 number-depth: 5
 ---
 
-\newpage
+# Data as objects
 
-# MODULE 2: Playing with data!
+In R, you manipulate objects only. **Everything** in R is an object. An object has:
 
-## Data as objects
+-   **Attribute(s)**, *e.g.*, names, levels, etc.,
 
-In R, you manipulate objects only. To define an object, use the arrow `<-`. For example `x <- 2 + 2` will assign 4 as the value of x.
+-   A **type**, *e.g.*, the object is an integer, a character, etc.,
 
-**Note:** In R, there is no distinction between defining and redefining an object (*à la* gen/replace in Stata).
+-   **Value(s)**, the content of an object
+
+To define an object, use the arrow `<-`. For example, `x <- 4` will assign 4 as the value to an object named x. The type of x will be numeric because 4 is a numeric value.
 
 ```{r}
-# Define y
-y <- 4
+# Define the object named x with a numeric value of 4
+x <- 4
 
-# Redefine y
-y <- y^2
+# Define the object y, a copy of x
+y <- x
 
-# Print y
+# Define the object z, the result of an addition
+z <- 2 + 2
+
+# Redefine z as the square of z
+z <- z^2
+
+# Print x, y, and z
+x
 y
+z
+
 ```
 
-### Data types
+**Note:** In R, there is no distinction between defining and redefining an object (like `gen`/`replace` in Stata). You can always change an object's values, types, and attributes on the fly.
 
-In R, you manipulate objects. **Everything** in R is an object. The objects may be of different types. There are 5 basic types in R[^1]. The other types are a composite combination of those.
+## Data Types
 
-[^1]: There is in fact a sixth type, the **raw** data type, but its use is beyond the scope of this course.
+The R objects may be of different types. There are five basic types in R. The other types are a composite combination of those.
 
-1.  **logical:** Data that should be interpreted as a logical statement, *i.e.* `TRUE` or `FALSE`.
+1.  **logical:** Data that should be interpreted as a logical statement, *i.e.,* `TRUE` or `FALSE`.
 
 2.  **integer:** `4L`. The `L` tells R to store the 4 as an integer.
 
 3.  **numeric:** `15.5`. Data should be interpreted as a floating number. Integers can be stored as numeric, but numeric may not be integers.
 
-4.  **complex:** `2+3i`. These are complex number with real and imaginary part.
+4.  **complex:** `2+3i`. These are complex numbers with real and imaginary parts.
 
-5.  **character:** `"string or text"`. This is a string of character. 15.5 could be stored in an object of class *character*. In that case, it would not be treated as a number, but as a string of characters.
+5.  **character:** `"string or text"`. This is a string of characters. `"15.5"` could be stored in an object of class *character*. In that case, it would not be treated as a number but as a string of characters.
 
-The five types above are the bricks to build any other data types. For example, R is known to have a **factor** type, that is used for categorical variables. From an object perspective, a factor is a specific object, but from the R interpreter perspective, the factor type is in fact an integer where each integer is assigned a string of character. Another type, **Date**, is in fact, from the R interpreter perspective, an integer counting the number of days that occurred since the first of January 1970. This is important to understand how data are stored and manipulated by the R interpreter to be able to use and transform them efficiently.
+## Define the Type of an Object
 
-### Discovering the type of an object
-
--   To discover the "type" of an object, from an object oriented perspective, you can use the function `class(object)`.
-
--   To discover the "type" of the object, from R's point of view, you can use the function `typeof(object)`.
-
-```{r eval=FALSE}
-a <- 2L
-class(a)
-typeof(a)
-
-b <- TRUE
-class(b)
-typeof(b)
-
-c <- "True"
-class(c)
-typeof(c)
-
-d <- factor("True")  
-class(d)
-typeof(d)
-
-```
-
-**Question:** Can you guess what will be the type of `d`?
-
-**Note:** In the example above, `class()` and `typeof()` return the same information for `a`, `b`, and `c` because they are basic R types. For d, because `factor` is a composite type, the object is seen as a factor, but R deals with it as an integer. It is then possible to extract the list of levels with `levels(object)`.
-
-```{r}
-
-d <- factor("True")  
-levels(d)
-
-```
-
-R is able to convert some types of objects to others on-the-fly. For example:
+In R, you do not need to state the type of an object before assigning a value to it (as is the case in C language, for example). Types are defined on the fly. R can also convert some objects to other types on the fly. For example:
 
 ```{r}
 a <- 2L # a is an integer
@@ -95,43 +70,53 @@ a <- 2L # a is an integer
 b <- 4.4 # b is a numeric
 
 a <- a + b # a is now a numeric
+
 ```
 
-If it is not possible for R to convert the object to the desired type during an operation, you will get an error.
-
-### Assessing the type of an object
-
-In some logical operation, you may need to check if an object is of the desired type. You can perform this with the command `is.integer()`, `is.logical()`, `is.character()`, etc. This function will return a logical value (`TRUE` or `FALSE`) depending on the type of the object.
+You will get an error if R cannot convert the object to the desired type during an operation.
 
 ```{r eval=FALSE}
 a <- 2L # a is an integer
-is.integer(a)
 
-b <- factor("R")
-is.integer(b)
+b <- "four" # b is a character
+
+# a + b generates an error because b cannot be converted into a numeric or integer and characters cannot be added to an integer
+a + b
+
 ```
 
-**Question:** In the example above, what will be the outcome of `is.integer(b)`?
+Sometimes, you need to redefine the type of an object manually. For example, you want to coerce a character object (`a <- "2"`) into an integer (`a <- 2L`). Common commands can help you with this when the data is formatted suitably:
 
-### Changing the type of an object
+-   `as.integer()` will take data that *look like integers* but is formatted as another type and change it to an `integer`.
 
-Sometimes, you need to redefine the type of an object yourself, for example, you want to coerce `a <- "2"` into an integer. Common commands can help you with this when the data is formatted suitably:
-
--   `as.integer()` will take data that *looks like integers* but are formatted as another type and change it to `integer`.
-
--   `as.numeric()` does the same, but change it to `numeric` type.
+-   `as.numeric()` does the same but change it to `numeric` type.
 
 -   `as.character()` coerce an object into an object of type `character`.
 
 -   other `as.something()` functions exist. You will discover them as you progress with R.
 
-### Mathematical operations on R objects
+## Assess the Type of an Object
 
-As we have seen already with the examples above, it is possible to apply mathematical operation on R objects defined above. These include additions, subtractions, multiplication and division, exponentiation, logarithms, or any other mathematical function that has a definition in R.
+In some logical operations, you may need to check if an object is of the desired type. You can perform this with the command `is.integer()`, `is.logical()`, `is.character()`, etc. Depending on the object type, this function will return a logical value (TRUE or FALSE).
+
+```{r}
+a <- 2L
+is.integer(a)
+
+b <- 2
+is.integer(b)
+
+```
+
+**Question:** In the example above, what will be the outcome of `is.integer(b)`?
+
+## Mathematical operations on R objects
+
+As we have seen with the examples above, applying mathematical operations on R objects defined above is possible. These include additions, subtractions, multiplication and division, exponentiation, logarithms, or any other mathematical function that has a definition in R.
 
 ```{r}
 # Addition and Subtraction
-2 + 2
+2 + 2 - 3
 
 # Multiplication and Division
 2 * 2 + 2 / 2
@@ -141,77 +126,97 @@ As we have seen already with the examples above, it is possible to apply mathema
 
 ```
 
-### Logical operations on R objects
+## Logical operations on R objects
 
 You can also evaluate logical expressions in R:
 
 ```{r}
 # Less than
-5 < 6
+a < b
 
-# Greater than or equals to
-5 >= 6
+# Less than or equal
+a <= b
+
+# More than
+a > b
+
+# Greater than or equal
+a >= b
 
 # Equals
-5 == 6
+a == b
 
 # Not equals
-5 != 6
+a != b
 
 # Another negation
 !TRUE == FALSE
+
 ```
 
-You can also use `AND` (`&`) and `OR` (`|`) operation with logical expressions:
+You can also use `&` (`AND`) and `|` (`OR`) operations with logical expressions:
 
 ```{r}
-# Is 5 equal to 5 OR 5 is equal to 6?
-(5 == 5) | (5 == 6)
+a <- 12
+b <- 15
+c <- a
 
-# Is 5 equal to 5 AND 5 is equal to 6?
-(5 == 5) & (5 == 6)
+# Is 5 equal to 5 OR is 5 equal to 6?
+(a == b) | (a == c)
+
+# Is 5 equal to 5 AND is 5 equal to 6?
+(a == b) & (a == c)
 
 ```
 
-## Data structures
+# Data structures
 
-In Stata, data is stored into one dataset, saved as a dta file. In R, you have many other possibilities. The standard structures in R (they can all coexist in the same environment) are: **vectors**, **matrices**, and **dataframes**. Other composite structures exist, such as tibbles, but we will focus for now on the four basic ones.
+So far, we considered only objects containing a single value. When you do data analytics, you often manipulate objects containing multiple values, such as **vectors**, **lists**, **matrices**, or **dataframes** (*i.e.,* tables). In R, these objects can all coexist in the same environment.
 
-### Vectors
+## Vectors
 
 The basic data structure containing multiple elements in R is the **vector**.
 
--   An R vector is much like the typical view of a vector in mathematics, *i.e.* it is basically a 1D array of elements.
+-   An R vector is much like the typical view of a vector in mathematics, *i.e.,* it is a 1D array of elements.
 
--   Usually, when we talk about *vectors*, we mean **atomic vectors**, the typical type of vectors in R, that are of a single type.
+-   Usually, when we talk about *vectors*, we mean **atomic vectors**, the typical type of vectors in R, that are of a single *type*. The types of vectors are the same as the single value object we described before (in practice, the objects presented above are atomic vectors of length 1).
 
 -   Contrary to other languages, like C++, vectors in R are dynamic: they have the ability to resize automatically when you add or delete an element. You can assess the length of a vector with the function `length(vector_name)`.
 
-#### Creating vectors
+### Create Vectors
 
--   To create a vector, use the function `c()`.
+-   To create a vector, use the coerce function: `c()`.
 
 ```{r}
-# Create `days` vector
+# Create a `days` vector
 days <- c("Mon", "Tues", "Wed", "Thurs", "Fri")
 
-# Create `temps` vector
-temps <- c(13, 18, 17, 20, 21)
+# Create a `numbers` vector
+numbers <- c(13, 18, 17, 20, 21)
 
-# Display `temps` vector
-temps
+# You could as well coerce multiple single-value objects into a vector
+a <- 12
+b <- 15
+c <- a
+
+d <- c(a, b, c)
+
+# Display the vector d
+d
+
 ```
 
--   Because atomic vectors are of a single type, if you assign values of different types to a vector, it will coerce them to the most general type.
+-   Because atomic vectors are of a single type, assigning values of different types to a vector will coerce them to the most general type.
 
 ```{r eval=FALSE}
 # Create a vector with values of different types
 vector_lambda <- c("Mon", TRUE, 2L)
+
 ```
 
 **Question:** What will be the type of `vector_lambda`?
 
-#### Naming vectors
+### Name Vectors
 
 You can name the element of a vector by assigning a vector of names to your vector.
 
@@ -220,16 +225,22 @@ You can name the element of a vector by assigning a vector of names to your vect
 vec_a <- c("a", "b", "c", "d")
 
 # Naming elements in vec_a
-names(vec_a) <- c("1st element", "2nd element",
-                  "3rd element", "4th element")
+names(vec_a) <- c("a first name", "another name",
+                  "yet another name", "the 5th element")
 
 # Display `vec_a` vector
 vec_a
+
+# Display the names of the elements in vec_a
+names(vec_a)
+
 ```
 
-#### Extracting a specific element of a vector
+**Warning:** In the example above, the element names in the vector are arbitrary. For example, element 4 in the vector is named the 5th element. You decide how you name your elements.
 
-If you would like to extract a specific element of a vector into another object, you simply need to write the position of this element into brackets `[ ]`.
+### Subset Vectors from Element Position
+
+-   If you would like to call a specific element of a vector into another object (it is called subsetting), you need to write the position of this element into brackets `[ ]`.
 
 ```{r}
 # extract the third element of vec_a into vec_b
@@ -237,78 +248,184 @@ vec_b <- vec_a[3]
 
 # display vec_b
 vec_b
+
 ```
 
-If the vector is named, it is possible to call the element by its name, with quotation marks.
+**Notes:** As we have seen before, a vector may contain only one element. You will receive an error if you invoke an element that does not exist.
+
+**Notes:** In R, the positions in a vector are numbered from 1 to n, n being the length of the vector (while in Python, they are numbered from 0 to n-1).
+
+-   You may also call multiple elements of a vector, by calling all of the positions of interest at the same time
 
 ```{r}
-# extract the third element of vec_a into vec_b
-vec_b <- vec_a["3rd element"]
+# A vector
+a <- c(1, 15, 654, 8, 5, 891, 1, 2, 34, 9, 7)
 
-# display vec_b
-vec_b
+# Call the elements 2, 5 and 7
+a[c(2, 5, 7)]
+
 ```
 
-#### Subsetting vectors
+-   You can also call all the elements between two bounds, with the operation `:`
 
-Subsetting is about extracting specific elements of an object. There are multiple ways of subsetting data in R. One of the easiest methods for vectors is to put the subset condition in the brackets:
+```{r}
+# Call all the elements of a between the 2nd and the 6th element
+a[2:6]
+
+```
+
+-   If the vector elements are named, it is possible to call an element by its name, with quotation marks.
+
+```{r}
+# Display the third element of vec_a, while calling it by its name
+vec_a["yet another name"]
+
+# Call the same element by its position in the vector
+vec_a[3]
+
+```
+
+### Subset Vectors with Conditions on Values
+
+-   You can also call elements of a vector based on a value condition
 
 ```{r}
 vec_c <- c(2, 5, 8, 18, 65, 1, 23, 45)
 
 vec_c[vec_c >= 18]
+
 ```
 
-**Note:** The position of the elements in the vector after subsetting has changed, because some elements have been removed (in the example, 1 is under 18, so it is removed).
+**Note:** The position of the elements in the vector after subsetting has changed, because some elements have been removed (in the example, 1, 2, 5, and 8 are under 18, so they are removed).
 
-In addition to the logical operations we mention earlier, vectors can be subsetted with the operator `%in%`. It is very convenient to identify elements of a vector belonging to a specific ensemble.
+-   In addition to the logical operations mentioned earlier, vectors can be subsetted with the operator `%in%`. Identifying elements of a vector belonging to a specific ensemble is very convenient.
 
-```{r eval=FALSE}
+```{r}
 vec_c <- c(2, 5, 8, 18, 65, 1, 23, 45)
 
 vec_subensemble <- c(2, 8, 32)
 
+# Extract all the elements of vec_c that are in vec_subensemble
 vec_c[vec_c %in% vec_subensemble]
+
 ```
 
-**Question:** What will be the output of the command above?
+### Replace a Value in a Vector
 
-#### Changing and assessing the type of a vector
+You can assign a new value to an element of a vector just like you do it for any object.
 
-Because *atomic* vectors are of a single type, it is possible to use the commands `as.integer()`, `as.character()`, etc., to change the type of all the vector element. If it is not possible to coerce an element of the vector to the new type, it will be replaced by a missing value, `NA`.
+```{r}
+# Replacing the 3rd element of vec_a with value 84.
+a[3] <- 84
+
+# That also works with other forms of calling.
+# For example, replace elements 5, 6, and 7 with 444
+a[5:7] <- 444
+
+# Display the new a
+a
+
+# Replace all the element of vec_c that are in vec_subensemble
+vec_c[vec_c %in% vec_subensemble] <- 65 
+
+```
+
+**question:** What will be the content of `vec_c`?
+
+### Change and Assess a Vector Type
+
+Because *atomic* vectors are of a single type, it is possible to use the commands `as.integer()`, `as.character()`, etc., to change the type of all the vector elements. If it is impossible to coerce an element of the vector to the new type, it will be replaced by a missing value, `NA`.
 
 ```{r eval=FALSE}
 vec_d <- c("2", "5", "six", "18")
+
 ```
 
 **Question:** What would be the output of `as.integer(vec_d)`?
 
-##### The case of factors
+### Composite Types
 
--   `as.factor()` will reformat a vector into a factor object. Each unique element of the vector will be used as a level of the factor, in alphabetical order.
+#### Factors
 
--   Because the alphabetical order may not be the best suitable for you, you may want to define the factor levels yourself, with the `factor()` function. This is useful for ordinal variables, such as Likert scales.
+In the first part of this module, we have seen 5 types of objects (integer, numeric, character, logical, and complex). The five types are the bricks to build any other data types.
+
+For example, R is known to have a **factor** type used for categorical variables. The *factor* is an integer, where each single value is associated with a string named level.
+
+```{r}
+# Creating a factor
+factor_vector <- factor("blue", "red")
+
+# The class of factor_vector is "factor", but the type is an integer, with 2 levels: blue and red.
+class(factor_vector)
+typeof(factor_vector)
+
+```
+
+-   It is then possible to extract the list of levels with `levels(object)`.
+
+```{r}
+levels(factor_vector)
+
+```
+
+-   With `as.factor()`, you can reformat a character vector into a factor object. Each unique element of the vector will be used as a level of the factor, in alphabetical order.
+
+```{r}
+# a character vector
+color <- c("blue", "red")
+
+# A factor vector
+color_fac <- as.factor(color)
+
+```
+
+-   The alphabetical order of the levels is not always the best suitable. For example, when you describe a Likert-scale, you want the levels to go from *strongly disagree* to *strongly agree*, not from *neither agree nor disagree* to *strongly disagree*... In that case, you can reorder the factor levels, with the `factor()` function.
 
 ```{r eval=FALSE}
-vec_e <- c("very low", "low", "low", "very high", "high", "medium")
+# A Likert scale as a character vector
+lik <- c("Strongly disagree", "Somewhat agree", "Strongly agree", "Neither agree nor disagree", "Strongly disagree", "Somewhat agree", "Somewhat disagree")
 
-test_1 <- as.factor(vec_e)
+# Converted as factor
+test_1 <- as.factor(lik)
 levels(test_1)
 
-
-test_2 <- factor(vec_e,
-                 levels  = c("very low", "low",
-                             "medium", 
-                             "high", "very high"),
+# Changing order of the levels
+test_2 <- factor(lik,
+                 levels  = c("Strongly disagree", "Somewhat disagree",
+                             "Neither agree nor disagree", 
+                             "Somewhat agree", "Strongly agree"),
                  ordered = TRUE)
+
 levels(test_2)
+
 ```
 
 **Question:** What is the difference between `test_1` and `test_2`?
 
-#### Operations on vectors
+#### Dates
 
-Operations on vectors are element-wise. So if 2 vectors are added together, each element of the $2^{nd}$ vector would be added to the corresponding element from the $1^{st}$ vector. Operations can be performed on vectors of different length if the length of one is a multiplier of the length of the other
+Another composite type, **Date**, is, from the R interpreter perspective, an integer counting the number of days that occurred since the first of January 1970. It is important to understand how data are stored and manipulated by the R interpreter to use and transform them efficiently.
+
+```{r}
+# A date, in a character vector
+d <- "1970-11-05"
+
+# Convert d to a date composite type
+d <- as.Date(d)
+
+# Convert the new d (a date), to an integer
+d_int <- as.integer(d)
+
+# Display d: 308 days between 1970-01-01 and 1970-11-05
+d_int
+
+```
+
+-   This means you can perform mathematical operations on a date as you would on an integer.
+
+### Operations on Vectors
+
+Operations on vectors are element-wise. So if 2 vectors are added together, each element of the $2^{nd}$ vector would be added to the corresponding element from the $1^{st}$ vector. Operations can be performed on vectors of different lengths if the length of one is a multiplier of the length of the other
 
 ```{r eval=FALSE}
 vec_f <- c(8, 10, 10, 15, 16)
@@ -322,15 +439,51 @@ vec_f + vec_g
 
 
 vec_f + vec_h
+
 ```
 
 **Question:** What will be the output of the example above?
 
-### Lists
+-   An example using dates. Imagine you would like to know the average frequency of a client's visit to your shop.
 
-A **list** is a vector that can store elements of different types and of different length. Lists are a common format when you collect nested data from the web (for example, the json output of the twitter API is a list).
+```{r}
+# Client visit
+d <- c("2023-01-12", "2023-01-19", "2023-02-24",
+       "2023-03-13", "2023-04-08", "2023-04-10",
+       "2023-06-17", "2023-07-03")
 
-#### Creating a list
+# Convert the character into dates
+d <- as.Date(d)
+
+# Now, d is an integer... Counting numbers of days between visits
+next_visit <- d[2:length(d)]
+previous_visit <- d[1:length(d)-1]
+
+# days between visits
+days_visits <- next_visit - previous_visit
+
+# average
+mean(days_visits) 
+
+```
+
+**Note:**
+
+-   `2:length(d)` means *all the elements from the* $2^{nd}$ *element until the length of d.*
+
+-   `1:length(d)-1` means *all the elements from the first element until the length of d - 1* (i.e., all the elements except the last one).
+
+-   We need to exclude the last elements from d because we can only subtract elements from vectors of the same length
+
+-   The subtraction `next_visit - previous_visit` will subtract all the pair of elements in the vectors, as would be the case in a subtraction of vectors in maths.
+
+-   `mean()` is a function that computes the average. We will study functions later in this course.
+
+## Lists
+
+A **list** is a vector that can store elements of different types and lengths. Lists are a common format when you collect nested data from the web (for example, the json output of the Twitter API is a list).
+
+### Create a List
 
 You create a list with the function `list()`.
 
@@ -345,23 +498,25 @@ list_a <- list(vec_f, vec_i, vec_j)
 
 # Display the list
 list_a
+
 ```
 
 As for vectors, it is possible to name elements of a list. For example:
 
 ```{r}
 # Create a list
-list_a <- list(vec_f = vec_f,
-               vec_i = vec_i,
-               vec_j = vec_j)
+list_a <- list(obs      = vec_f,
+               text     = vec_i,
+               logi_var = vec_j)
 
 # Display the list
 list_a
+
 ```
 
 In the example above, the first element of the list is named `vec_f` and is given the elements of `vec_f` as value. Note that `vec_f` within the list and `vec_f` outside the list are two different and independent objects.
 
-#### Extracting elements of a list
+### Extract Elements from a List
 
 With double brackets `[[ ]]`, you can extract elements from a list:
 
@@ -372,6 +527,7 @@ list_a[[2]]
 
 # Or extract it using its name
 list_a[["vec_i"]]
+
 ```
 
 You can also extract a specific value from a specific element of a list:
@@ -379,17 +535,18 @@ You can also extract a specific value from a specific element of a list:
 ```{r eval=FALSE}
 # Extract the third value of the second element of the list
 list_a[[2]][3]
+
 ```
 
--   The position of the list element is stated first, with double brackets, the position of the value to extract within the list element is stated second, with single brackets, because the list simply contains a series of atomic vectors (this also means that elements of the list can be stored as atomic vectors[^2]).
+-   The position of the list element is stated first, with double brackets, the position of the value to extract within the list element is stated second, with single brackets, because the list simply contains a series of atomic vectors (this also means that elements of the list can be stored as atomic vectors[^1]).
 
 -   If the value to extract does not exist, `NA` is returned.
 
-[^2]: In fact, it is possible to store more complex objects than atomic vectors as element of a list, but that would be undoubtedly going a bit too far.
+[^1]: In fact, it is possible to store more complex objects than atomic vectors as element of a list, but that would be undoubtedly going a bit too far.
 
-### Matrices
+## Matrices
 
--   Data in a 2-dimensional structure can be represented in two formats, as a `matrix` or as a `dataframe`.
+-   Data in a 2-dimensional structure can be represented in two formats: a `matrix` or a `dataframe`.
 
 -   A matrix is used for 2D data structures of a single data type (like atomic vectors). Usually, matrices are composed of numeric objects.
 
@@ -400,15 +557,16 @@ matrix(x,
        nrow  = a,
        ncol  = b,
        byrow = FALSE/TRUE)
+
 ```
 
 -   `x` is the data that will populate the matrix.
 
 -   `nrow` and `ncol` specify the number of rows and columns, respectively. Generally need to specify just 1 since the number of elements and a single condition will determine the other.
 
--   `byrow` specifies whether to fill in the elements by row or column. The default is `byrow = FALSE`, *i.e.* the data is filled in by column.
+-   `byrow` specifies whether to fill in the elements by row or column. The default is `byrow = FALSE`, *i.e.,* the data is filled in by column.
 
-#### Creating a matrix from scratch
+### Create a matrix from scratch
 
 A simple example of creating a matrix would be:
 
@@ -420,6 +578,7 @@ matrix(vec_k,
        nrow  = 2,
        ncol  = 3,
        byrow = FALSE)
+
 ```
 
 Note the difference in appearance if we instead `byrow = TRUE`
@@ -429,11 +588,12 @@ matrix(vec_k,
        nrow  = 2,
        ncol  = 3,
        byrow = TRUE)
+
 ```
 
--   Note that the line breaks and spaces, when defining `vec_k`, are purely for readability purposes. Unlike Stata, R allows you to break code over multiple lines without any extra line break syntax.
+-   Note that the line breaks and spaces, when defining `vec_k`, are purely for readability. Unlike Stata, R allows you to break code over multiple lines without any extra line break syntax.
 
--   As for vectors and lists, it is possible to name elements of the matrix. Only here, instead of using `names()`, we use `rownames()` and `colnames()`.
+-   As for vectors and lists, it is possible to name matrix elements. Only here, instead of using `names()`, we use `rownames()` and `colnames()`.
 
 ```{r}
 m <- matrix(vec_k,
@@ -445,9 +605,10 @@ rownames(m) <- c("1st row", "2nd row")
 
 # Diplay m
 m
+
 ```
 
-#### Matrix operations
+### Matrix operations
 
 -   In R, matrix multiplication is denoted by `%*%`, as in `A %*% B`
 
@@ -465,397 +626,297 @@ vec_l
 
 # Element-wise operations with a vec_l and m, defined above
 vec_l * m
+
 ```
 
-### Dataframes
+-   You can transpose a matrix with:
 
-Dataframes are probably the most common structure you will use in R. Dataframes are generic object in R to store tabular data. They are composed with a series of vectors of *same length* and possible *different type* (to the contrary of matrices that have only one type).
+```{r}
+# Transpose m
+m2 <- t(m)
+
+# Display m2
+m2
+
+```
+
+## Dataframes
+
+Dataframes are probably the most common structure you will use in R. Dataframes are generic objects in R to store tabular data. They are composed of a series of vectors of the *same length* and possibly *different types* (to the contrary of matrices that have only one type).
 
 -   Each vector is stored as a column of the dataframe.
 
--   Each column as a name. If no names are given to a column when it is set, R will provide a default name (usually `V1` or `X1`).
+-   Each column has a name. If no names are given to a column when it is set, R will provide a default name (usually `V1` or `X1`).
 
--   Usually, when you import data in R from a data file (such as a `.dta` Stata file, or a `.csv` file), the content will be stored in a dataframe. You can also create dataframes from vectors or from matrices, manually.
+-   Usually, when you import data in R from a data file (such as a `.dta` Stata file, or a `.csv` file), the content will be stored in a dataframe. You can also create dataframes from vectors or matrices, manually.
 
--   **Note:** some packages create an object called *tibble*. The tibble is an alternative to the `dataframe` that has been created as a part of the `tidyverse` package. As `dataframe`, `tibble` contain a table of data, *e.g.* variables as vectors in columns, possibly of different types, and rows as values. In most cases, you would not see the difference between a `dataframe` and a `tibble`, but some functions in R require the use of `tibble`. You can simply convert `dataframe` into `tibble` with the `as.tibble()` function.
+-   **Note:** some packages create an object called *Tibble*. The Tibble is an alternative to the `data.frame` created as a part of the `tidyverse` package. As `data.frame`, `tibble` contain a table of data, *e.g.* variables as vectors in columns, possibly of different types, and rows as values. In most cases, you would not see the difference between a `data.frame` and a `tibble`, but some functions in R require the use of `tibble`. You can simply convert `data.frame` into `tibble` with the `as.tibble()` function.
 
-#### Creating a data frame
+### Create a data frame
 
--   Creating a dataframe might be as simple as converting a matrix into a dataframe:
+-   You generally create dataframes by loading data into R, from a file. For example:
 
 ```{r}
-df <- as.data.frame(m)
+# Dataset in SPSS format loaded into R
+pisa_spss <- rio::import("data/CY07_MSU_SCH_QQQ.sav")
 
-df
 ```
 
--   Another way of creating a data frame is to combine other vectors or matrices (of the same length) together.
+-   Another way to create a data frame is to combine other vectors or matrices (of the same length).
 
 ```{r}
-vec_m <- c("a", "b")
+# Create vectors
+vec_a <- c("a", "b")
 
-df <- data.frame(vec_m, m)
+vec_b <- c(844, 327)
 
+# Structure the vectors in a dataframe
+df <- data.frame(vec_a, vec_b)
+
+# Display the dataframe
 df
+
 ```
 
 -   Note that your dataframe, `df`, now appears in your environment tab. At the end of the line, you see a small table. If you click on it, you will view the content of the dataframe.
 
--   You can rename the columns of the dataframe with the `names()` function, as before.
+### Rename Columns of `data.frame`
 
-#### Adding a new column to a data frame
-
-Now, in the example above, when we merge `vec_m` with the matrix m to create our dataframe, we assumed that the observations in the vector and in the matrix were following the same order. Imagine that you want to append a vector to a dataframe that is following a different order (elements of the new vector appear in a different order as the elements in our dataframe). It is still possible to merge them if you have a key by which you can match the rows.
-
-Here is an example. Let's first create the following dataframe:
+-   You can rename the dataframe's columns with the `names()` function, as before.
 
 ```{r}
-# 
-df_2 <- data.frame(id = c("b", "a", "c"),
-                   value = c(15, 32, 81))
-```
-
-Let's assume that `id`, in `df_2`, and `vec_m`, in `df`, contains the same information: a unique identifier of each observation. You will note that `df_2` contains one more observations (`id = "c"`), and the order of observations differs from the ones in `df`. To merge nonetheless `df` with `df_2`, you can use the following function:
-
-```{r}
-df_3 <- merge(x = df, y = df_2,
-              by.x = "vec_m",
-              by.y = "id",
-              all.x = TRUE, all.y = TRUE)
+# Name the columns of df
+names(df) <- c("column 1", "column 2")
 
 ```
 
--   In the `merge()` function, the x and y indicate the names of the dataframe to combine.
-
--   `by.x` and `by.y`, respectively indicate the names of the column to use to match observations between `x` and `y`.
-
--   `all.x` and `all.y` indicate what to do with observations that do not appear in both `x` and `y` (here, `"c"` only appears in `df_2`).
-
-    -   If both are set to `TRUE`, all observations will be kept in the output dataframe, and missing columns will be filled with `NA`.
-    -   If one is set to `FALSE`, only the observations that also appear in the other dataframe will be kept.
-
-#### Adding rows to a data frame
-
-Let's assume that we would like to append the following dataframe to `df_3`:
+-   You can also rename a column using a condition.
 
 ```{r}
-df_4 <- data.frame(vec_m = c("e", "f"),
-                   X1 = c(81, 32),
-                   X2 = c(156, 32),
-                   X3 = c(321, 51),
-                   value = c(4, 127))
-```
-
-You can append the two new rows with the following function[^3]:
-
-[^3]: Note that when you use the `rbind` function, all columns must be present in both dataframe. If you would like to append rows from a dataframe with missing columns, you can use the command `rbind.fill` from the `plyr` package. We will see during the next module how to install and use packages.
-
-```{r}
-df_3 <- rbind(df_3, df_4)
-```
-
-**Note** that the order of the columns do not matter with `rbind`, as long as they are all present.
-
-#### Selections in a dataframe
-
-Once you have a dataframe, you will usually want to create or manipulate particular columns of it. The columns are usually variables.
-
--   The default way of invoking a named column in R is by appending a dollar sign and the column name to the data object. `df$vec_m` would return the variable named `vec_m` in the dataframe.
-
--   Another way is to name the column of interest into brackets, as for vectors, lists, or matrices `df[, "vec_m"]`
-
-    -   **Note** the comma `,` before the variable name. This is because the dataframe is two-dimensional: rows are accessed first, then columns (yes, this is the contrary as for list, and yes, it is unpleasant). As such, if you want to extract the second elements of `vec_m`, you would write: `df[2, "vec_m"]`.
-
-    -   Another way to extract the second element of `vec_m`: `df$vec_m[2]`.
-
--   You can also select a subset of columns or rows that meet a given condition
-
-#### Subsetting a data frame
-
-```{r}
-# Subsetting observations when X3 >= 35 AND X2 > 20
-df_5 <- df_3[(df_3$X3 >= 35) & (df_3$X2 > 20),]
-df_5
-```
-
-**Note** that the column argument is left empty, so all columns are returned by default. You could as well indicate a vector of columns to keep in the output.
-
-```{r}
-# Selecting specific columns while subsetting
-df_5 <- df_3[(df_3$X3 >= 35) & (df_3$X2 > 20), c("vec_m", "X2", "X3")]
-df_5
-```
-
-Now, you note that a line with missing values was added in the operation because `df_3` contains a row with missing information. You can subset incomplete observations with the following command:
-
-```{r}
-# Excluding lines with missing values
-df_5 <- df_5[complete.cases(df_5), ]
-```
-
-## Data and the tidyverse
-
-### Principles of tidy data
-
-Rules for tidy data (from *R for Data Science*):
-
-1.  Each variable must have its own column.
-
-2.  Each observation must have its own row.
-
-3.  Each value must have its own cell.
-
-## Tidy datasets
-
-Let's load again the data from the Module 1.
-
-```{r}
-# Dataset in SAS format
-pisa_sas <- rio::import("data/cy07_msu_sch_qqq.sas7bdat")
+# Rename the column of df named "column 1" into "COLUMN A"
+names(df)[names(df) == "column 1"] <- "COLUMN A"
 
 ```
 
-### Extract variables from dataframe
+-   Or you can name the column while creating your dataframe.
 
-Now, you can see the two data files loaded in dataframes your environment, with 21'903 observations. But the dataset is very big. If you are interested in specific variables, you can extract them into a new `dataframe`. For example, to extract, `"CNT"`, `"CNTSCHID"`, `"SC016Q01TA"`, `"SC155Q02HA"`, from `pisa_sas`:
+```{r}
+# Create a new data.frame with 3 columns of 5 observations: id, value, and var_3
+df_2 <- data.frame(id = c("b", "a", "c", "a", "b"),
+                   value = c(15, 32, 81, 654, 11),
+                   var_3 = c(TRUE, FALSE, FALSE, TRUE, TRUE))
+
+```
+
+## Subset Variables from a `data.frame`
+
+Just like we did from vectors, you can subset elements of a dataframe with element positions and with values. Simply keep in mind that dataframes have two dimensions:
+
+-   the first dimension is the rows
+
+-   the second dimension is the columns of your dataframe
+
+```{r}
+# For example, call the 3rd element of the 2nd column in df_2
+df_2[3, 2]
+
+```
+
+-   To extract all the values of the 3^rd^ row, write:
+
+```{r}
+# Extract all the values of the third row
+df_2[3,]
+
+```
+
+-   To extract all the values of the 3rd columns, write:
+
+```{r}
+# Extract all the values of the 2nd column
+df_2[,2]
+
+```
+
+-   As for vectors, you can extract elements (lines or columns of your tables) using row names, column names, or conditions.
+
+```{r}
+# Extract one column by name
+CNT <- pisa_spss[,"CNT"]
+
+```
+
+**Note:** To simplify the writing, when you call a column of a dataframe, instead of writing the bracket and comma, you can replace the bracket part with a dollar symbol `$`. It does the same, but the writing is simpler for the general case.
+
+```{r}
+# Extract one column by name
+CNT <- pisa_spss$CNT
+
+```
+
+**Note** that `CNT` and `pisa_spss$CNT` are two different objects. The first one is a vector in your environment. The second one is a column of the data.frame `pisa_spss`.
+
+You can also extract multiple columns at a time `"CNT"`, `"CNTSCHID"`, `"SC016Q01TA"`, `"SC155Q02HA"`, from `pisa_spss`. In that case, you cannot use the dollar symbol.
 
 ```{r}
 # Using brackets
-df <- pisa_sas[, names(pisa_sas) %in% c("CNT",
-                                        "CNTSCHID",
-                                        "SC016Q01TA",
-                                        "SC155Q02HA")]
+df <- pisa_spss[, names(pisa_spss) %in% c("CNT",
+                                          "CNTSCHID",
+                                          "SC016Q01TA",
+                                          "SC155Q02HA")]
 
 ```
 
-### Remove dataframe or variables
+-   You can also extract the first 5000 observations, or a random sample, or observations meeting a condition.
 
-You created a `dataframe` called `df`, containing the variables you are interested in. You may want to remove the two prior datasets that you loaded, to save memory:
+```{r}
+# Extract the first 5000 observations
+df_3 <- df[1:5000,]
+
+# Extract a random sample of 5000 observations
+df_4 <- df[sample(nrow(df), 5000), ]
+
+# Extract rows when SC016Q01TA <= 95
+df_5 <- df[df$SC016Q01TA <= 95, ]
+
+# You can also combine multiple conditions
+df_6 <- df[(df$SC155Q02HA > 90) & (df$SC016Q01TA <= 95),]
+
+```
+
+**Note:** the conditional subsetting keeps the missing values.
+
+## Remove `data.frame` or Variables
+
+You created many `data.frame` in your environment. If you want to remove some of them and save memory, you can do so with:
 
 ```{r, eval=FALSE}
-rm(pisa_spss, pisa_sas)
+# remove pisa_spss and df_2
+rm(pisa_spss, df_2)
 
 ```
 
 The command above removes two complete datasets from your environment. If you want to remove a variable in a dataset, for example, `"CNTSCHID"`, use the following command:
 
 ```{r, eval=FALSE}
+# Remove columns CNTSCHID in dataframe df
 df[, "CNTSCHID"] <- NULL
 
 ```
 
-**Question:** Do you see any way to get the same results using the `$` operator?
+## Add Observations in a `data.frame`: Append Rows
 
-### Rename columns
-
-```{r, eval=FALSE}
-# With base R
-names(df)[names(df) == "SC155Q02HA"]<- "new_name"
-
-```
-
-### Extract a random sample from a dataframe
-
-`df` is very big. If you would like to work on a subset of data, you can extract a random sample from your dataset with the following code:
-
-```{r, eval=FALSE}
-df <- df[sample(nrow(df), 5000), ]
-
-```
-
-where `5000` is the number of random rows that you want to extract.
-
-### Gathering data
-
-If values for a single variable are spread across multiple columns (e.g. income for different years), [gather](https://www.rdocumentation.org/packages/tidyr/versions/0.8.0/topics/gather) moves this into single "values" column with a "key" column to identify what the different columns differentiated. In short, gather converts a wide dataset into long. Example:
+Imagine that you collected data into two different Excel files. They contain the same variables, but different observations. You can append rows to a single dataset with `plyr::rbind.fill()`. Make sure that the columns in common have the same names. The missing columns will be filled with `NA` (missing values).
 
 ```{r}
-library(dplyr)
+# Examples of Excel files to combine
+f1 <- rio::import("./data/dc_1.xlsx")
+f2 <- rio::import("./data/dc_2.xlsx")
 
-# We create a dataframe for the example
-earnings_panel <- data.frame(person = c("Elsa", "Mickey", "Ariel", "Gaston",
-                                        "Jasmine", "Peter"),
-                         y1999 = c(10, 20, 17, 19, 32, 22),
-                         y2000 = c(15, 28, 21, 19, 35, 29))
+# Make sure the same column have the same name in both dataframe
+#  In our example, the observation identifier is called different accross
+#   files. We rename it.
+names(f1)[names(f1) == "identifier"] <- "id"
 
-# Gather data
-earnings_gathered <- earnings_panel %>%
-  tidyr::gather(key = "year", value = "wage", y1999:y2000)
-
-```
-
-You could also do this without the tidyverse, but that would require more lines of code.
-
-#### A parenthesis about pipes, denoted `%>%`
-
-A famous function from the tidyverse is ***pipe***, denoted `%>%`:
-
--   Pipes allow you to combine multiple steps into a single piece of code.
-
--   Specifically, after performing a function in one step, a pipe takes the data generated from the first step and uses it as the data input to a second step. Example:
-
-```{r, eval=FALSE}
-library(dplyr)
-
-earnings_gathered <- earnings_panel %>%
-  tidyr::gather(key = "year", value = "wage", y1999:y2000)
-```
-
-This is absolutely equivalent to writing:
-
-```{r}
-earnings_gathered <- tidyr::gather(earnings_panel,
-                                key = "year", value = "wage",
-                                y1999:y2000)
-```
-
-But the code bellow does not require an extra package (`dplyr`), to run... In general, I find that the pipes `%>%` makes the code less intuitive and more prone to errors. It also does not save the intermediary steps. Thus, I don't use it. However, it is often seen in books and example codes that you can find online, so you need to know what it means. You can also use it as you like.
-
-### Spreading data
-
-Spread tackles the other major problem, that often times (particularly in longitudinal data) many variables are condensed into just a "key" (or indicator) column and a value column. In short, spread converts a long dataset into wide. Example:
-
-```{r, eval=FALSE}
-earnings_gathered %>% tidyr::spread(key = "year", value = "wage")
+# The, you can append the files with plyr::rbind.fill()
+df <- plyr::rbind.fill(f1, f2) 
 
 ```
 
-### Group data
+Now, df contains all the observations of f1 and f2.
 
-Creating summary statistics by group is another routine task. This is accommodated in the tidyverse using the [`group_by()`](https://www.rdocumentation.org/packages/dplyr/versions/0.7.3/topics/group_by). In base R, you can use `aggregate()`.
-
-The arguments, in addition to the data set, are simply the grouping variables separated by commas.
-
-For example, let's calculate the mean per gender:
-
-```{r}
-# Loading data from Ecdat, see Module 1.
-wages <- Ecdat::Wages1
-
-# With base R:
-aggregate(wage ~ sex, wages, mean)
-
-```
-
-About the `aggregate` function, note the `~` to separate `wage` and `sex`. This means by, and is very much used in the formulas of any statistical models, as we will see later in this course.
-
-### Arrange (sort) data
-
-If you want to sort your data by the values of a particular variable, you can do so as well with the [`arrange()`](https://www.rdocumentation.org/packages/dplyr/versions/0.7.3/topics/arrange) function (tidyverse), or with the `sort()` function (base R).
-
-```{r, eval=FALSE}
-# With base R, order by increasing experience and decreasing wage
-wages[order(wages[, "exper"], -wages[, "wage"]), ]
-
-```
-
-### Filter data
-
-Filtering keeps observations (rows) based on conditions, just like using subset conditions in the row arguments of a bracketed subset. Example:
-
-```{r, eval=FALSE}
-# Using brackets
-wages[(wages$school > 10) & (wages$exper > 10),]
-
-```
-
-### Mutate data
+## Add Variables in a `data.frame`: New Columns
 
 Creating new variables that are functions of existing variables in a data set can be done with:
 
 ```{r}
-# With base R:
-wages$expsq <- wages$exper^2
+# var_3 is 2 * var_2
+df$var_3 <- df$var_2 * 2
+
+# We can also write
+df[, "var_3"] <- df[, "var_2"] * 2
+
+# Recode a dummy variable from the gender variable
+df$is_female <- as.integer(df$gender == "female")
 
 ```
 
-### Recode variables
-
-Along with renaming variables, recoding variables is another integral part of data wrangling. You can do this with or without the tidyverse. For example, to recode `sex` as a dummy variable
-
-```{r, eval=FALSE}
-# With the tidyverse
-wages$is_female <- wages$sex %>% recode("male" = 0,
-                                        "female" = 1)
-
-# With base R
-wages$is_female <- as.integer(wages$sex == "female")
-```
-
-### Identify missing values
-
-Does one of your variables contains missing values? You can assess if an observations is missing with the function `is.na()`. Missing values in R are coded `NA`. For example:
+In the example above, you apply an operation to all the values of a vector. Sometimes, you may want to create a variable whose value is conditional to another variable. For example, you want to create a `var_4` variable that is `var_2 + 1` if `var_1 >= 4` and `var_2 - 1` otherwise. You can do so by writing twice the condition: once on the output variable, and once on the operation. You have to write the condition twice to ensure that each vector element correctly matches each other: observation 1 in output matches with observation 1 in input (*REMEMBER*: when you subset a vector with a condition, elements that do not meet the condition are removed).
 
 ```{r}
-a <- NA
+# Example: var_4 = var_2 + 1 if var_1 >= 4 and var_2 - 1 otherwise
 
-is.na(a)
+# create a var_4 variable with the case otherwise
+df$var_4 <- df$var_2 - 1
+
+# Adjust if var_1 >= 4: the condition appears twice
+df$var_4[df$var_1 >= 4] <- df$var_2[df$var_1 >= 4] + 1
+
 ```
 
-You can apply it to a vector:
+## Identify Missing Values
 
-```{r }
-missing_sc016Q01ta <- is.na(df$SC016Q01TA)
+Does one of your variables contain missing values? You can assess if an observation is missing with the function `is.na()`. Missing values in R are coded `NA`. For example:
+
+```{r}
+# Count the number of missing values in the gender variables
+sum(is.na(df$gender))
 
 ```
 
 To know the number of cases are found in a categorical or a logical variable, use `table`. The table commands counts all the occurrences of each values of a variable. Example:
 
 ```{r}
-table(missing_sc016Q01ta)
+table(is.na(df$gender))
 ```
 
-#### Removing missing values
+### Remove Missing Values
 
-In the previous lesson, we removed the missing values using:
+You can remove the missing values using:
 
 ```{r, eval=FALSE}
+# Keep only the complete cases in your data.frame
 df <- df[complete.cases(df), ]
+
 ```
 
 The command above remove all the rows containing missing values on any variables of `df`.
 
-**Question:** Using `is.na()`, how could you remove rows containing missing values on `SC016Q01TA`?
+**Question:** Using `is.na()`, how could you remove rows containing missing values on `gender`?
 
 **Solution:**
 
 ```{r, eval=FALSE}
-df_2 <- df[!is.na(df$SC016Q01TA), ]
+# Remove rows containing missing value on the gender variable
+df_2 <- df[!is.na(df$gender), ]
 ```
 
-#### Recode missing Values
+-   `!is.na()` means NOT is NA.
 
-Another problem characteristic of observational data is missing data. In R, the way to represent missing data is with the value `NA`. You can recode missing value that *should be* `NA` but are code using a different schema by using brackets:
+### Recode Missing Values
+
+Another problem characteristic of observational data is missing data. In R, the way to represent missing data is with the value `NA`. You can recode missing values that *should be* `NA` but are coded using a different schema by using brackets:
 
 ```{r, eval=FALSE}
 # Replace 99-denoted missing data with NA
-
-# With base R
-wages[wages$school == 99, ] <- NA
-
-```
-
-You can check for (correctly-coded) missing-values using the [`is.na()`](https://www.rdocumentation.org/packages/base/versions/3.4.3/topics/NA) function.
-
-```{r}
-## Missing 
-table(is.na(wages$school))
+df[df$var_2 == 99, ] <- NA
 
 ```
 
 **Note:** R does not naturally support multiple types of missingness like other languages, although it's possible to use the [`sjmisc`](https://cran.r-project.org/web/packages/sjmisc/index.html) package to do this.
 
-## Merging data
+## Merge Dataframes Together
 
-In the first module, we learnt how to add a vector to a `data.frame`. By doing this, we assume that:
+We learned how to add a vector to a `data.frame`. By doing this, we assume that:
 
 1.  the vector is of the same size as the `data.frame`, and
 
-2.  the observations are in the same order in the vector and in the `data.frame`.
+2.  the observations are in the same order in the vector and the `data.frame`.
 
-Let's assume is it not the case. For example, you have the two following `data.frame`, with a unique identifier and a variable, and you want to `merge` them:
+Let's assume this is not the case. For example, you have the two following `data.frame`, with a unique identifier and a variable, and you want to `merge` them:
 
 ```{r}
+# Create two data.frame
 df_1 <- data.frame(id    = c(1, 2, 3, 4, 5, 6, 7),
                    var_1 = c("a", "a", "b", "a", "d", "e", "e"))
 
@@ -865,15 +926,13 @@ df_2 <- data.frame(identifier = c(2, 12, 7, 8, 9, 10, 11, 3, 13),
 
 ```
 
-You note that the two data.frame contain a unique identifier (named differently) and a variable each, but they do not have the same number of rows, and the unique identifier do not match line per line.
+You note that the two `data.frame` contain a unique identifier (named differently) and a variable each, but they do not have the same number of rows, and the unique identifiers do not match line per line.
 
-The starting point for any merge is to enumerate the column or columns that uniquely identify observations in the dataset. This is often the case to have unique identifiers in your data, such as respondent id, organization number, municipality, *etc.* For panel data, this will typically be both the personal/group identifier and a timing variable, for example Sweden in 2015 in a cross-country analysis.
+The starting point for any merge is to enumerate the column or columns that uniquely identify observations in the dataset. Rows often have unique identifiers, such as respondent id, organization number, municipality, *etc.* For panel data, this is typically the group identifier and a time variable, for example, Sweden in 2015 in a cross-country analysis.
 
-Note that in the example above, the variable names of the unique identifier do not match across data.frame. It does not matter: with the merge function, you can provide the name of the identifier for each data.frame. It also does not matter if it is the first column of the data.frame or not.
+In the example above, the variable names of the unique identifier do not match across `data.frame`. It does not matter: with the merge function, you can provide the name of the identifier for each `data.frame`. It also does not matter if it is the first column of the `data.frame` or not.
 
-### Using `merge()`
-
-#### Case 1: left join
+### Case 1: left join
 
 You left join when you want all the observations from the first dataset, but not the second (missing values will be filled with `NA`:
 
@@ -881,6 +940,7 @@ You left join when you want all the observations from the first dataset, but not
 df_left <- merge(x = df_1, y = df_2,
                  by.x = "id", by.y = "identifier",
                  all.x = TRUE, all.y = FALSE)
+
 ```
 
 -   where `x` and `y` are the names of the `data.frames` to merge.
@@ -891,7 +951,7 @@ df_left <- merge(x = df_1, y = df_2,
 
 -   `all.y = FALSE` indicates that we do NOT want to keep the observations from the second `data.frame` that do not also appear in the first `data.frame`
 
-#### Case 2: right join
+### Case 2: right join
 
 It is the same, but keeping all observations from the second dataset:
 
@@ -899,11 +959,12 @@ It is the same, but keeping all observations from the second dataset:
 df_right <- merge(x = df_1, y = df_2,
                   by.x = "id", by.y = "identifier",
                   all.x = FALSE, all.y = TRUE)
+
 ```
 
 -   Pay attention to the different number of observations in `df_1` and `df_2`.
 
-#### Case 3 and 4: all observations, or only observations in common
+### Case 3 and 4: all observations, or only observations in common
 
 -   To keep all observations from any data.frame (most inclusive):
 
@@ -911,6 +972,7 @@ df_right <- merge(x = df_1, y = df_2,
 df_all <- merge(x = df_1, y = df_2,
                   by.x = "id", by.y = "identifier",
                   all.x = TRUE, all.y = TRUE)
+
 ```
 
 -   To keep only the common observations (most exclusive):
@@ -919,11 +981,12 @@ df_all <- merge(x = df_1, y = df_2,
 df_all <- merge(x = df_1, y = df_2,
                   by.x = "id", by.y = "identifier",
                   all.x = FALSE, all.y = FALSE)
+
 ```
 
-### Extract missing rows
+## Extract missing observations
 
-Sometimes, you may want to keep only observations that do NOT appear in both dataset. You can do this with R base:
+Sometimes, you may want to keep only observations that do NOT appear in both datasets. You can do this with R base:
 
 ```{r}
 # df_1 observations that are NOT in df_2
@@ -936,16 +999,92 @@ df2_not_df1 <- df_2[!c(df_2$identifier %in% df_1$id),]
 
 **Reminder:** `!` means NOT. The way to read the content of the brackets `!c(df_1$id %in% df_2$identifier)` means NOT `df_1$id` in `df_2$identifier`.
 
-### Appending data
+## Sort `data.frame`
 
-Finally, instead of joining different datasets for the same individuals, sometimes you want to join together files that are for different individuals within the same dataset. When join data where the variables for each dataset are the same, but the observations are different, this is called *appending* data.
+If you want to sort your data by the values of a particular variable, use the `sort()` function:
 
-If you want to append `df2_not_df1` to `df1_not_df2`, you can use `plyr::rbind.fill()`. Make sure that the column in common have the same names. The missing columns will be filled with `NA`:
-
-```{r}
-# Make sure the same column have the same name
-names(df2_not_df1)[names(df2_not_df1) == "identifier"] <- "id"
-
-df <- plyr::rbind.fill(df1_not_df2, df2_not_df1)
+```{r, eval=FALSE}
+# Order by increasing experience and decreasing wage
+wages[order(wages[, "exper"], -wages[, "wage"]), ]
 
 ```
+
+**Note** the `-` in front of the `wage` variable, to signal decreasing order.
+
+## Transforming from wide to long format: Gather
+
+If values for a single variable are spread across multiple columns (*e.g.*, income for different years), [gather](https://www.rdocumentation.org/packages/tidyr/versions/0.8.0/topics/gather), from the `tidyr` package, moves this into single "values" column with a "key" column to identify what the different columns differentiated. In short, `gather` converts a wide dataset into a long one. Example:
+
+```{r}
+library(dplyr)
+
+# We create a dataframe for the example
+earnings_panel <- data.frame(person = c("Elsa", "Mickey", "Ariel", "Gaston",
+                                        "Jasmine", "Peter"),
+                             y1999 = c(10, 20, 17, 19, 32, 22),
+                             y2000 = c(15, 28, 21, 19, 35, 29))
+
+# Gather data
+earnings_gathered <- earnings_panel %>%
+  tidyr::gather(key = "year",
+                value = "wage",
+                y1999:y2000)
+
+```
+
+You could also do this without the tidyverse, but that would require more lines of code.
+
+### A parenthesis about pipes, denoted `%>%`
+
+A famous function from the tidyverse is the ***pipe***, denoted `%>%`:
+
+-   Pipes allow you to combine multiple steps into a single piece of code.
+
+-   Specifically, after performing a function in one step, a pipe takes the data generated from the first step and uses it as the data input for a second step. Example:
+
+```{r, eval=FALSE}
+library(dplyr)
+
+earnings_gathered <- earnings_panel %>% 
+  tidyr::gather(key = "year",
+                value = "wage",
+                y1999:y2000)
+  
+```
+
+This is equivalent to writing:
+
+```{r}
+earnings_gathered <- tidyr::gather(earnings_panel,
+                                   key = "year",
+                                   value = "wage",
+                                   y1999:y2000)
+
+```
+
+But the code below does not require an extra package (`dplyr`), to run... In general, I find that the pipes `%>%` makes the code less intuitive and more prone to errors. It also does not save the intermediary steps. Thus, I don't use it. However, it is often seen in books and example codes that you can find online, so you need to know what it means. You can also use it as you like.
+
+## Transforming from long to wide format: Spread
+
+Spread tackles the other major problem, that often times (particularly in longitudinal data) many variables are condensed into just a "key" (or indicator) column and a value column. In short, spread converts a long dataset into a wide one. Example:
+
+```{r, eval=FALSE}
+earnings_gathered %>% tidyr::spread(key = "year",
+                                    value = "wage")
+
+```
+
+## Aggregate data
+
+Creating summary statistics by group is another routine task. You can do so with `aggregate()`. For example, let's calculate the mean wage per gender in the `Wages1` dataset:
+
+```{r}
+# Loading data from Ecdat, see Module 1.
+wages <- Ecdat::Wages1
+
+# With base R:
+aggregate(wage ~ sex, wages, mean)
+
+```
+
+Note the `~` to separate `wage` and `sex`. This means *by* and is very much used in the formulas of any statistical models, as we will see later in this course.

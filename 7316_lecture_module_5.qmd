@@ -1,6 +1,6 @@
 ---
-title: "7316 - Introduction to data analysis with R"
-subtitle: "MODULE 5: playing with more advanced tools"
+title: "MODULE 5: Playing with More Advanced Tools"
+subtitle: "7316 - Introduction to Data Analysis with R"
 author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
 format:
   docx:
@@ -12,17 +12,13 @@ number-sections: true
 number-depth: 5
 ---
 
-\newpage
-
-# MODULE 5: playing with more advanced tools
-
 When you do programming with R, it often happens that you want to repeat an operation on multiple objects. To do just this, you can use **loops** and **functions**. Those are massively used tools in any project where you want to use multiple times the same code (you should never need to copy-paste code, rather use functions). Loops and functions are very powerful, but a great power implies great responsibilities... We will see later in this module the limits of these tools and how to avoid the traps of falling in infinite loops or in memory overload.
 
-## Loops
+# Loops
 
 A loop performs a task multiple times across a list of objects, a set of index values (with `for`), or as long as a condition is not met (with `while`).
 
-### `for` loops
+## `for` loops
 
 **Syntax:**
 
@@ -40,7 +36,7 @@ for (indexname in range) {
 
 -   You do not need to break lines and indent your code, but this is a usual practice to make your code more readable.
 
-#### `for` loops across named elements
+### `for` loops across named elements
 
 You can loop over elements instead of values.
 
@@ -75,7 +71,7 @@ for (i in 1:4) {
 
 -   The `:` in `1:4` means "*all the integers between 1 and 4*". It would be the same as writing `c(1, 2, 3, 4)`.
 
-#### `for` loops and vector indexes
+### `for` loops and vector indexes
 
 -   It is often the case that you want to apply an operation to all the element of a vector. This may be useful when combined with a `if` statement (see below about `if` statements). You can do it with a loop:
 
@@ -96,7 +92,7 @@ for (i in 1:nrow(df_1)) {
 
 -   `nrow()` returns the number of rows in a `data.frame`. This is like `length()` for vectors.
 
-### `while` statements
+## `while` statements
 
 `while` statement works the same way as `for` loops, and perform an operation as long as a condition is not met. Example
 
@@ -116,7 +112,7 @@ while (i > 0) {
 
 **WARNING:** If your `while` condition is never met, the loop will never stop! Until the end of the universe... **Be careful!**
 
-### `if` statements
+## `if` statements
 
 `if` statements are also a useful part of programming, either in conjunction with iteration or separately. An if statement performs operations only if a specified condition is met.
 
@@ -143,7 +139,7 @@ for (i in 1:length(df_1$birthyr)) {
 
 ```
 
-#### Multiple conditions
+### Multiple conditions
 
 You can encompass several conditions using the `else if` and catch-all `else` control statements.
 
@@ -167,7 +163,7 @@ for (i in 1:length(df_1$birthyr)) {
 
 -   You **cannot** manipulate the element of a vector that does not exist with a `if` statement in a `data.frame`. You need first to create the vector (here, we create an empty `character()`) and then test your condition.
 
-### A general advice: DON'T USE LOOPS! EVER!!!
+## A general advice: DON'T USE LOOPS! EVER!!!
 
 -   Loops are evil! They use a lot of time and resources! They are a **BAD** practice!! Probably every time you use a loop, there is a penguin dying in Antarctica.
 
@@ -240,7 +236,7 @@ endtime - starttime
 
 -   Here, the time to run is, again, less than a second. If you would use a loop, with a if condition, that would likely take 15 minutes to run.
 
-## Functions
+# Functions
 
 Functions are very useful to repeat a specific set of operations on multiple objects. If you find yourself performing the same specific steps more than a couple of times (perhaps with slight variations), then you should consider writing a function.
 
@@ -300,9 +296,9 @@ odd(numbers)
 
 **Warning:** objects *within* the function body and *outside* are not the same, although they may have the same name, *i.e.* if you have an `x` variable in your environment, it does not have to correspond to the `x` that you used as an argument.
 
-## Manipulating text
+# Manipulating text
 
-### Concatenating strings
+## Concatenating strings
 
 The last type of data preparation that we will cover in this course is manipulating string data.
 
@@ -345,7 +341,7 @@ for (i in 1:nrow(df)) {
 
 ```
 
-### Extracting and replacing parts of a string using `stringr`
+## Extracting and replacing parts of a string using `stringr`
 
 Other common string manipulating tasks include extracting or replacing parts of a string. These are accomplished via the `str_extract()` and `stringr::str_replace()` from [stringr](https://stringr.tidyverse.org/index.html) package.
 
@@ -378,7 +374,7 @@ stringr::str_replace_all(string_1, "logic", "illogic")
 
 ```
 
-### `gsub` and `grepl`
+## `gsub` and `grepl`
 
 Another convenient command, from base R, to replace content in a string is `gsub`. It works as `stringr::str_replace_all()`, but the argument are in a different order.
 
@@ -407,7 +403,7 @@ grepl(pattern = "Logic", x = string_1, ignore.case = TRUE)
 
 ```
 
-### Using *regular expressions* in patterns
+## Using *regular expressions* in patterns
 
 Often we want to modify strings based on a pattern rather than an exact expression, as seen with examples above. Patterns are specified in R (as in many other languages) using a syntax known as **regular expressions** or **regex**. Today, we will very briefly introduce some regular expressions.
 
@@ -425,7 +421,7 @@ Often we want to modify strings based on a pattern rather than an exact expressi
 
 -   See the RStudio cheat sheet on `stringr` for more examples (and in general, as a brilliant reference to *regex*)
 
-#### How many times to match?
+### How many times to match?
 
 Aside from specifying the characters to match, such as `"[0-9]"`, another important component of regular expressions is how many time should the characters appear.
 
@@ -448,7 +444,7 @@ grepl("(19|20)[0-9]{2}$", years[3])
 
 ```
 
-#### Escaping special characters
+### Escaping special characters
 
 Often, special characters can cause problems when working with strings. For example, trying to add a quote can result in R thinking you are trying to close the string. For most characters, you can "*escape*" (cause R to read as part of the string) special characters by prepending them with a backslash.
 
@@ -463,7 +459,7 @@ writeLines(quote)
 
 ```
 
-### Matching strings that precede or follow specific patterns
+## Matching strings that precede or follow specific patterns
 
 To match part of a string that occurs before or after a specific other pattern, you can also specify "lookarounds", the pattern the match should precede or follow:
 
@@ -486,7 +482,7 @@ stringr::str_extract(price_info, "(?<=(The price is )).+(?=( dollars))")
 
 ```
 
-### Trimming a string
+## Trimming a string
 
 When working with formatted text, a third common task is to remove extra spaces before or after the string text. This is done with the `stringr::str_trim()` function. The syntax is:
 
@@ -496,7 +492,7 @@ stringr::str_trim("an  extra space ")
 
 **Note**, when printing a string, any formatting characters are shown. To view how the string looks formatted, use the `ViewLines()` function.
 
-## Web Scraping with `rvest`
+# Web Scraping with `rvest`
 
 "Scraping" data from the web - that is, automating the retrieval of data displayed online (other than through API) is an increasingly common data analysis task.
 
@@ -504,7 +500,7 @@ stringr::str_trim("an  extra space ")
 
 -   The specific focus today is only on scraping data structured as a table on a webpage. The basic method highlighted will work much of the time, but does not work for every table.
 
-### Using `rvest` to scrape a table
+## Using `rvest` to scrape a table
 
 -   The starting point for scraping a web table with `rvest` is the `rvest::read_html()` function, where the URL to the page with data should go.
 
@@ -520,8 +516,17 @@ stringr::str_trim("an  extra space ")
 
 ```{r}
 
-tech_stock_names <- c("MSFT", "AMZN", "GOOGL",
-                      "AAPL", "FB", "INTC", "CSCO")
+url <- "https://finance.yahoo.com/quote/AMZN/history"
+
+page <- rvest::read_html(url)
+
+df <- rvest::html_table(page)
+
+
+df <- df[[1]]
+
+
+tech_stock_names <- c("MSFT", "AMZN")
 
 scrape_yahoo <- function(x) {
   url <- paste0("https://finance.yahoo.com/quote/",
@@ -546,7 +551,7 @@ for (j in 2:length(tech_stock_names)) {
 
 **WARNING:** Scraping is often tolerated, but sending many request to the same server will likely lead you to be banned. If you scrape data, do not overload server! Make sure you collect data that you are allowed to collect!
 
-#### Does `rvest` covers everything?
+### Does `rvest` covers everything?
 
 -   rvest is a tool to scrape static page, i.e. pages where content does not vary asynchronously. If you want to harvest asynchronous content (for example, data from webapps), you will need more advanced tools, such as rselenium, that is able to scrape content as we humans would see it on the screen. We will not cover rselenium in this course, because it does not belong to the introductory tools, but you can find more information on their page: <https://github.com/ropensci/RSelenium>
 

@@ -1,6 +1,6 @@
 ---
-title: "7316 - Introduction to data analysis with R"
-subtitle: "MODULE 3: Describing data."
+title: "MODULE 3: Describing Data"
+subtitle: "7316 - Introduction to Data Analysis with R"
 author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
 format:
   docx:
@@ -12,19 +12,13 @@ number-sections: true
 number-depth: 5
 ---
 
-\newpage
+# Graphs in R
 
-# MODULE 3: Describing data
+## Data visualization overview
 
-Now, you know how to import data, create and clean a dataset. In this module, we will learn how to describe a dataset with visuals and with summary statistics.
+One of the strong points of R is creating very high-quality data visualization. R is very good at both "static" and interactive data visualization designed for web use. Today, we will cover static data visualization.
 
-## Graphs in R
-
-### Data visualization overview
-
-One of the strong points of R is creating very high-quality data visualization. R is very good at both "static" data visualization and interactive data visualization designed for web use. Today, we will cover static data visualization.
-
-### ggplot2 for data visualization
+## ggplot2 for data visualization
 
 The main package for publication-quality static data visualization in R is [`ggplot2`](https://ggplot2.tidyverse.org/), which is part of the tidyverse collection of packages. With `ggplot2` you control all the elements of your graphs, from the data you visualize and the way you represent it, to the style of the graph and the quality of the output (high-resolution...).
 
@@ -48,7 +42,7 @@ The workhorse function of ggplot2 is `ggplot2::ggplot()`. The `gg` stands for "*
 
 -   You may then add other functions to your graph, to define, `labs` (the labels), `ggtitle` (the title), `ggtheme` (the theme), etc.
 
-### Scatterplots
+## Scatterplots
 
 First, let's look at a simple scatterplot, which is defined by using the geometry `geom_point()`.
 
@@ -88,7 +82,7 @@ ggplot(df) +
 
 -   Variables names are **NOT** quoted (`""`) in `ggplot2`: they are written directly with their full names (here: `iv`, `dv`)
 
-#### Colors and shapes
+### Colors and shapes
 
 -   Graphs can be extensively customized using additional arguments inside of elements, or with additional functions. For example, you may want to **color the element by group**:
 
@@ -151,7 +145,7 @@ ggplot(df) + aes(x = iv,
 
 -   In both cases, you have to make sure that your color or shape list contains as many values as the number of groups you want to plot (or, it can contain more, but not less).
 
-#### Adding gradient colors
+### Adding gradient colors
 
 If you have a continuous scale to color, you may want to add gradient.
 
@@ -171,9 +165,9 @@ ggplot(df) + aes(x = iv,
 
 ```
 
-### Axis and titles
+## Axis and titles
 
-Sometimes, you would like to use a customize scale for the axis:
+Sometimes, you would like to use a customized scale for the axis:
 
 ```{r}
 #| label: fig-customscales
@@ -235,7 +229,7 @@ ggplot(df) + aes(x = iv,
        color = "categories")
 ```
 
-#### Lines
+### Lines
 
 To plot a straight line somewhere on your graph, you can use `geom_vline()` (vertical) or `hline` (horizontal):
 
@@ -260,7 +254,7 @@ ggplot(df) + aes(x = iv,
 
 -   Here again, you can customize the position, color, or linetype. The seven styles of linetypes are available [here](http://www.sthda.com/english/wiki/ggplot2-line-types-how-to-change-line-types-of-a-graph-in-r-software).
 
-#### ablines and regression lines
+### ablines and regression lines
 
 You can also plot a line across the graph, indicated slope and intercept, using `abline()`, or you can plot a regression lines fitted to your data, using `geom_smooth()`:
 
@@ -295,9 +289,9 @@ The parameter of `geom_smooth`:
 
 -   `se`: a logical whether standard errors should be plotted or not.
 
-### Bars and histograms
+## Bars and histograms
 
-For continuous variables, you may want to plot an histogram with `geom_histogram()`.
+For continuous variables, you can plot a histogram with `geom_histogram()`.
 
 ```{r}
 #| label: fig-histograms
@@ -314,7 +308,7 @@ ggplot(df) +
 
 ```
 
-`bar_plot()` is the same, but for discrete variables. By default, a bar plot uses frequencies for its values, but you can use values from a column by specifying `stat = "identity"` inside `geom_bar()`.
+`bar_plot()` is the same but for discrete variables. By default, a bar plot uses frequencies for its values, but you can use values from a column by specifying `stat = "identity"` inside `geom_bar()`.
 
 ```{r}
 #| label: fig-barplots
@@ -337,7 +331,7 @@ ggplot(tmp) +
 
 ```
 
-### Saving and reusing graph
+## Saving and reusing graph
 
 Sometimes, you may want to save a graph for later use, or for update. With R, it is possible: a graph is an object that can be manipulated as any other object. For example, in the first example above, instead of repeating twice, the same code, we could have assigned the scatterplot to an object and added colors to that object. Example:
 
@@ -366,7 +360,7 @@ graph_2
 
 ```
 
-### Facet grid
+## Facet grid
 
 I placed the two figures above side by side, but they are two different figures. Sometimes, you may want to show a grid of figures, for example, n scatterplots of the same variables, per group (instead of using colors or shapes). You can do this with `facet_wrap`. For example, reusing `graph_1` from above:
 
@@ -382,7 +376,7 @@ graph_1 + facet_wrap(~group, ncol = 2)
 
 ```
 
-### Adding themes
+## Adding themes
 
 Another option to affect the appearance of the graph is to use **themes**, which affect a number of general aspects concerning how graphs are displayed.
 
@@ -406,7 +400,7 @@ ggplot(df) + aes(x = iv,
 
 ```
 
-### High quality graph
+## High quality graph
 
 Once your plot is ready, if you want to save it in high resolution, you can use:
 
@@ -427,7 +421,7 @@ dev.off()
 
 -   where `width` and `height` are the size of your plot, saved in `figure_1.png`, and `res` is the resolution (*i.e.* the quality) of the image. By default, the resolution of plots is 150 dpi. A higher value is preferable.
 
-### More with ggplot2
+## More with ggplot2
 
 This has been just a small overview of things you can do with ggplot2. To learn more about it, you can:
 
@@ -437,9 +431,9 @@ This has been just a small overview of things you can do with ggplot2. To learn 
 
 -   Finally, the [RStudio cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf) may help you move further.
 
-## Descriptive statistics
+# Descriptive statistics
 
-### Summarize data
+## Summarize data
 
 When exploring your data, or writing your result section in your thesis, you will need descriptive statistics. R includes all the required functions for usual descriptive statistics: [`mean()`](https://www.rdocumentation.org/packages/base/versions/3.4.3/topics/mean), [`median()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/median), [`sd()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/sd), [`min()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Extremes.html), [`max()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Extremes.html), [`cor()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/cor), [`quantile()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/quantile), [`IQR()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/IQR) , *etc.*
 
@@ -503,7 +497,7 @@ rio::export(tmp, "data/CNT.xlsx")
 
 ```
 
-### Summary statistics in a nice table
+## Summary statistics in a nice table
 
 Often, in your report, you simply want to insert a table with the mean and standard deviation on all the variables in your model. You can do this with the command `st()` from the package `vtable`:
 
@@ -561,7 +555,7 @@ vtable::st(
 )
 ```
 
-### Correlation matrices
+## Correlation matrices
 
 You can return a correlation between two variables with `cor(x, y)`.
 
@@ -587,9 +581,9 @@ knitr::kable(corrr::fashion(x))
 
 That way, you get a correlation matrix without the significance level. You can still get them through the procedures of the blog posts above, but that will be longer code.
 
-## Getting nice output documents with Quarto
+# Getting nice output documents with Quarto
 
-### Reproducible R Reports
+## Reproducible R Reports
 
 So far, we have been working purely with basic `.R` script files, which are very similar to Stata `.do` files. But R is a programming language that allows you to do **MUCH** more, including dynamic website (to share your data outputs and data online), or reports (the course you are reading was written within R).
 
@@ -601,7 +595,7 @@ Quarto is a new module with R. Previously, documents were created with RMarkdown
 
 This course was written with Quarto. You can find the corresponding `.qmd` files on the github repository of the course (see Module 1).
 
-### Creating an Quarto document
+## Creating an Quarto document
 
 -   To create an quarto document (file .qmd), go to **File** \> **New File** \> **Quarto document...**
 
@@ -629,13 +623,13 @@ On top of the document, if you press `Render`, a Word document will be generated
 
 The content of the .qmd file is in fact a combination or R and Markdown code (the markup language defining what is a header, what is a text body, where are the bullet lists, etc.) that is interpreted in the visual editor. If you prefer to work on the `.qmd` source, you can click on the `source` button (on the top left). However, in this course, since the visual editor is very handy and very intuitive, we will not cover the specifics of the Markdown language. If you want to learn it, you can read *R markdown: The definitive guide*, that you will find in the reading list of module 1. I will now present some of the YAML and code chunk options that will be useful for your own documents.
 
-### YAML metadata
+## YAML metadata
 
 The YAML metadata define the general properties of your document, including the appearance and the output format. Bellow, the figure shows the options I used to generate the module 2 course document. The blue parts (in quotes) are the values, the brown parts are possible options.
 
 ![Some YAML options in quarto](assets/images/03_04_yaml.png){#03_04_yaml fig-align="center"}
 
-#### Common output options
+### Common output options
 
 Here are a few common options:
 
@@ -659,7 +653,7 @@ Here are a few common options:
 
 After this, you can simply type your output document. You can adjust the design and insert elements such as tables or figures using the buttons in the toolbar, just as in MS Word.
 
-### Code chunk
+## Code chunk
 
 Now, if you want to write R code and display the output in your document, you need to insert a new code chunk by clicking on `Insert` \> `Code chunk` \> `R`. An empty chunk will then appear, as shown bellow:
 
@@ -667,7 +661,7 @@ Now, if you want to write R code and display the output in your document, you ne
 
 In the code chunk, you can type and run code, just as in an R script.
 
-#### Code chunk options
+### Code chunk options
 
 There are several output options you can specify for how R code and the code output are expressed in reports. These options are expressed bellow the red `{r}` declaration at the top of the chunk, on new lines (one line per option).
 

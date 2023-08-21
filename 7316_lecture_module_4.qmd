@@ -1,6 +1,6 @@
 ---
-title: "7316 - Introduction to data analysis with R"
-subtitle: "MODULE 4: Modeling data."
+title: "MODULE 4: Modeling Data"
+subtitle: "7316 - Introduction to Data Analysis with R"
 author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
 format:
   docx:
@@ -12,13 +12,9 @@ number-sections: true
 number-depth: 5
 ---
 
-\newpage
-
-# MODULE 4: Modeling data
-
 In the module 3, we have seen how to describe data with static visuals and with descriptive statistics, including correlation tables. In this module, we will cover how to model data in R with common models, and how to display the results.
 
-## R Formulæ
+# R Formulæ
 
 In R, to estimate a model, you need formulæ. A formula is an R object that simply states the equation representing the relationship you are trying to model. As a simple example, let us assume you would like to estimate an OLS model described by the following equation:
 
@@ -28,7 +24,7 @@ $$
 
 In R, you would write **the formul**a as: `Y ~ X1 + X2`. You can write formulæ for all kinds of mathematical models. Because the formula is an R object, just as any object, you can save it in your environment, change its type on the fly, manipulate it, etc. For example, assign the formula with `myf <- Y ~ X1 + X2`.
 
-### Formula syntax:
+## Formula syntax:
 
 -   The left-hand side and the right-hand side are separated with `~`. Example: `Y ~ X`
 
@@ -75,7 +71,7 @@ model_4 <- update(model_2, . ~ . + X2)
 
 ```
 
-## OLS regression in R
+# OLS regression in R
 
 Being able to reproduce equations is not enough. To obtain the output above, you also need to estimate models. For example, the basic method of performing an OLS regression in R is to the use the [`lm()`](https://www.rdocumentation.org/packages/stats/versions/3.4.3/topics/lm) function. To fit an OLS model, you can just call the `lm()` function. Once you have fitted the model, you can visualize it with the `summary()` function, or store it in an object, or use it for prediction, extracting residuals, etc.
 
@@ -111,6 +107,7 @@ summary(fit_1)
 -   You could also extract residuals, fitted values, etc.. Bellow, I assign them to new variables into the dataframe.
 
 ```{r}
+fit_1$coefficients[1]
 # Extract the fitted values
 df$fitted <- fit_1$fitted.values
 
@@ -119,11 +116,11 @@ df$resid <- fit_1$residuals
 
 ```
 
-### Diagnostic checking for OLS regression
+## Diagnostic checking for OLS regression
 
 Saving the residuals, the fitted values, or other parameters, may be useful for diagnostic checking of your models.
 
-#### Plotting diagnostics
+### Plotting diagnostics
 
 -   Using what we have see last time, we can plot the actual and the fitted values:
 
@@ -159,7 +156,7 @@ autoplot(fit_1) + ggthemes::theme_clean()
 
 ```
 
-#### Some other measures of diagnostics
+### Some other measures of diagnostics
 
 Other diagnostics measures can easily be produced in R, either with base R, or with well known packages: cook's distance (`cooks.distance()`), variance inflation factors (`car::vif()`), normality of the residuals, and others:
 
@@ -198,7 +195,7 @@ moments::kurtosis(df$resid)
 moments::jarque.test(df$resid)
 ```
 
-#### Heteroskedasticity-robust errors
+### Heteroskedasticity-robust errors
 
 In practice, errors should *almost always* be specified in a manner that is heteroskedasticity and autocorrelation consistent. You can run the Breush-Pagan test for heteroskedasticity with:
 
@@ -224,7 +221,7 @@ lmtest::coeftest(m_example,
 
 [^1]: Long J. S., Ervin L. H. (2000). "Using Heteroscedasticity Consistent Standard Errors in the Linear Regression Model." *The American Statistician*, 54, 217--224.
 
-## Formatting regression output: stargazer
+# Formatting regression output: stargazer
 
 We have seen, above, that you can display the estimated models with `summary()`. `summary()` is great to quickly display results in R, but it is not suitable to generate results that you want to copy-paste into reports and presentation: the formatting of the output is not compelling.
 
@@ -300,7 +297,7 @@ stargazer::stargazer(
 
 -   Often, journals have specific guidelines on how to display tables (including, how many stars to display for p-value \< .05, how many decimals, etc.), you can choose the style with `style =`. In the example above, I chose *American Economic Review*, but other options include *American Journal of Sociology*, *Administrative Science Quarterly*, and many others.
 
-## General linear models with R
+# General linear models with R
 
 Many other models, such as a logistic regression, poisson, etc., are available in the `glm` function (for *general linear models*). Everything works the same way.
 
@@ -339,7 +336,7 @@ lmtest::coeftest(model_logistic, vcov. = vcovHC, type = "HC1")
 
 ```
 
-### Predictions
+## Predictions
 
 -   Logit and probit models are not displaying linear relationships. You may want to illustrate your results with predictions for specific or average cases.
 
@@ -371,7 +368,7 @@ diff(pred)
 
 -   `type = "response"` indicates that we want the predictions to be on the scale of the response variable (in the case of a logit models, these are log-odds).
 
-#### Accuracy analysis
+### Accuracy analysis
 
 -   Predicting is nice, but you may want to know how accurate where your predictions. You can compute accuracy measures for sensitivity and specificity:
 
@@ -397,7 +394,7 @@ caret::confusionMatrix(as.factor(df$Y_dum),
 
 -   In the example above, the predictions are very good: we have 91% of true positive (sensitivity) and 92% of true negative (specificity).
 
-### Other `glm` models
+## Other `glm` models
 
 -   We have seen above examples of the glm function for logit and probit regression. Other families are possible, including poisson, gamma, quasi, quasibinomial, and quasipoisson. For the binomial, other links are possible: Cauchy CDF, log, and c-loglog. They are always estimated following the same format. Example:
 
@@ -415,7 +412,7 @@ summary(model_poisson)
 
 ```
 
-### Using models from Stata
+## Using models from Stata
 
 Sometimes, you may want to use model from Stata within R, because the specific model you would like to use is better implemented in Stata (this is the case, for example, of some mixed effect models). To call a stata function from R:
 
@@ -439,3 +436,4 @@ RStata::stata(src = "mydofile.do", data.in = df)
 -   where `data.in` points out to your data.frame in R, that you want to load in Stata.
 
 -   **Warning:** make sure your variable names in your data.frame are compatible with Stata. See the module 1 section on styles for more details.
+

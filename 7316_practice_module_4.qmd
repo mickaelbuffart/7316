@@ -1,6 +1,6 @@
 ---
-title: "7316 - Introduction to data analysis with R"
-subtitle: "MODULE 4: Modeling data. – Practice."
+title: "MODULE 4: Modeling data. – Practice."
+subtitle: "7316 - Introduction to data analysis with R"
 author: "Mickaël Buffart ([mickael.buffart@hhs.se](mailto:mickael.buffart@hhs.se))"
 format:
   docx:

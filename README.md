@@ -1,42 +1,44 @@
 # 7316 - Introduction to R for Data Analytics
 
-Material for the course of Introduction to R for Data Analytics from the [_Stockholm School of Economics_](https://pcw.hhs.se/course/7316), 2022.
+Material for the course **Introduction to R for Data Analytics** from the [_Stockholm School of Economics_](https://pcw.hhs.se/course/7316), 2023.
 
-The course is an introduction to the R statistical programming language, focusing on essential skills needed to perform data analysis from entry, to preparation, analysis, and finally presentation. During the course, students will not only learn basic R functionality, but also how to leverage the extensive community-driven package ecosystem, and how to write their own functions in R. This is a pass/fail course.
+This course introduces the R statistical programming language, focusing on essentials for data preparation, analysis, and presentation. During the course, students will learn basic R functionality, write their own functions, and leverage the community-driven package ecosystem. This course is pass/fail.
 
 ## Course content
 
-* **Module 1:** [R basics](docs/7316_module_1.pdf).
-* **Module 2:** [Data manipulation in R](docs/7316_module_2.pdf).
-* **Module 3:** [Loops, conditions, functions, text, & scrapping](docs/7316_module_3.pdf).
-* **Module 4:** [Producing static visuals & outputs](docs/7316_module_4.pdf).
-* **Module 5:** [Project management & RMarkdown](docs/7316_module_5.pdf).
-* **Module 6:** [Producing interactive visuals and outputs](docs/7316_module_6.pdf).
+* **Module 1:** [Getting Used to R and RStudio](docs/7316_module_1_lecture.pdf).
+* **Module 2:** [Playing with data](docs/7316_module_2_lecture.pdf).
+* **Module 3:** [Describing data](docs/7316_module_3_lecture.pdf).
+* **Module 4:** [Modeling data](docs/7316_module_4_lecture.pdf).
+* **Module 5:** [Playing with more advanced tools: loops, functions, texts, & scraping](docs/7316_module_5_lecture.pdf).
+* **Module 6:** [Producing interactive outputs](docs/7316_module_6_lecture.pdf).
 
 ## Practice material
 
-* **Module 1:** _see course content_.
-* **Module 2:** [practice](docs/7316_module_2_practice.pdf), [solutions](docs/7316_module_2_solutions.pdf).
-* **Module 3:** [practice](docs/7316_module_3_practice.pdf), [solutions](docs/7316_module_3_solutions.pdf).
-* **Module 4:** [practice](docs/7316_module_4_practice.pdf), [solutions](docs/7316_module_4_solutions.pdf).
-* **Module 5:**  _see course content_.
-* **Module 6:**  practice (_see course content_), [solutions to the shiny app](7316_module_6_shiny.R).
+* **Module 1:** [practice](docs/7316_module_1_practice.pdf).
+* **Module 2:** [practice](docs/7316_module_2_practice.pdf).
+* **Module 3:** [practice](docs/7316_module_3_practice.pdf).
+* **Module 4:** [practice](docs/7316_module_4_practice.pdf).
+* **Module 5:** [practice](docs/7316_module_5_practice.pdf).
 
 ## References
 
 * Wickham, H., & Grolemund, G. (2016). _[R for data science: import, tidy, transform, visualize, and model data](https://r4ds.had.co.nz/)._ O'Reilly Media, Inc.
 * Wickham, H. (2016). _[ggplot2: elegant graphics for data analysis](https://ggplot2-book.org/)._ Springer. 
-* Xie, Y., Allaire, J. J., & Grolemund, G. (2018). _[R markdown: The definitive guide](https://bookdown.org/yihui/rmarkdown/)._ Chapman and Hall/CRC.
 * Wickham, H. (2019). _[Advanced R](https://adv-r.hadley.nz)._ CRC press.
-* Wickham, H. (2015). _[R packages: organize, test, document, and share your code](https://r-pkgs.org/)._ O'Reilly Media, Inc. 
+
+## Download R & RStudio
+
+* [Find the R software here](https://cran.r-project.org/)
+* [Find RStudio here](https://posit.co/download/rstudio-desktop/#download)
 
 ## External links
 
 * [**StackOverflow**](https://stackoverflow.com/questions/tagged/r)
 * [**RStudio Cheat Sheets**](https://www.rstudio.com/resources/cheatsheets/)
+* [**DataCamp**](https://www.datacamp.com/courses/free-introduction-to-r)
 * On [**Plotly**](https://plotly.com/r/)
 * On [**Shiny**](https://shiny.rstudio.com/tutorial/)
-* [**Shinyapp.io**](https://www.shinyapps.io/)
 
 * * *
 
