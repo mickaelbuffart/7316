@@ -79,7 +79,7 @@ To fit the model 1 above, using OLS regressions, write:
 
 ```{r}
 # Loading data.You can find ols_dataset on Canvas
-df <- rio::import("./data/ols_dataset.xlsx")
+df <- rio::import("./data/7316_module_4_data/ols_dataset.xlsx")
 
 # Fitting
 fit_1 <- lm(Y ~ C1 + C2 + C3, data = df)
@@ -437,3 +437,122 @@ RStata::stata(src = "mydofile.do", data.in = df)
 
 -   **Warning:** make sure your variable names in your data.frame are compatible with Stata. See the module 1 section on styles for more details.
 
+## Using sources from Python
+
+Python can also be used natively in quarto documents, in RStudio, the same way that you use R. For this, you need to have a python interpreter installed on your computer, and set in the options of R Studio. In my case, I use the latest version of [Python](https://www.python.org/downloads/), but you could as well use Anaconda or Miniconda if you prefer.
+
+Once the Python interpreter is installed in your machine, select in in RStudio, though `Tools` \> `Global Options…` \> `Python` \> `Select`.
+
+![Select your Python interpreter](assets/images/supp0.png){fig-align="center" width="256"}
+
+After this is done, restart RStudio, and start using Python in your quarto documents!
+
+# Running Python in RStudio
+
+-   To run a Python code in RStudio, create a new code chunk. Instead of starting it with `{r}`, simply start it with `{python}`. That's it.
+
+![Begining of a python code chunk](assets/images/supp3.png){fig-align="center"}
+
+-   Then, in the chunk, you can simply type the code in Python.
+
+```{python}
+
+# Python code to generate two random variables
+import numpy as np
+import pandas as pd
+
+# Define the number of data points you want
+num_data_points = 100
+
+# Generate random values for x and y with a normal distribution
+mu, sigma = 0, 1  # Mean and standard deviation
+x = np.random.normal(mu, sigma, num_data_points)
+y = np.random.normal(mu, sigma, num_data_points)
+
+# Create a DataFrame
+data = {'x': x, 'y': y}
+df = pd.DataFrame(data)
+
+```
+
+-   The code above should run as a Python script if Python is properly set in your environment. It generates two random variables, and save them in a dataframe called df. But this dataframe is not accessible in the r environment. It is only visible to Python.
+
+```{r}
+
+# In R, the size of df is NULL
+nrow(df)
+
+```
+
+**Note** that the code above is written in R. The code chunk starts with `{r}`.
+
+# Getting the data in the R environment
+
+-   Let's transfer the dataframe created in python, above, into R. Thanks to the `reticulate` package, the object created in Python are accessible in R within an object called `py`.
+
+```{r}
+
+# Load reticulate
+library(reticulate)
+
+# In R, transfer df from Python to R
+df <- py$df
+
+
+```
+
+-   Now, you can manipulate df in R
+
+```{r}
+
+# Use the dataframe created in Python, with a model in R.
+model_1 <- lm(y ~ x, data = df)
+
+# Print the results
+summary(model_1)
+
+# Extract the residuals
+df$res <- model_1$residuals
+
+```
+
+-   In Python, it is the other way around. The objects saved in the R environment are accessible in Python through the `r.` object.
+
+```{python}
+
+# In Python, transfer df from R,
+#   including the residuals we generated, to Python...
+df2 = r.df
+
+```
+
+-   In your environment tab, you can see both Python and R object (if you choose Python or R in the dropdow menu). In the Python environment, you can see now the original `df` dataframe that you created, and the `df2`, that you just imported from the R environment.
+
+![df2 in Python, from R](assets/images/supp1.png){fig-align="center" width="332"}
+
+-   Then, you can manipulate df2 in python, just like any other Python object. For example, create an histogram.
+
+```{python}
+#| label: fig-histpython
+#| fig-cap: "Histogram with Matplotlib"
+#| fig-align: "center"
+#| fig-width: 4
+#| fig-height: 2.25
+#| dpi: 1200
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# In Python, plot a histogram of the 'res' column
+plt.hist(df2['res'], bins=10, edgecolor='black')  
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.title('Histogram of res')
+plt.show()
+
+
+```
+
+-   Note that the histogram, done with Python, now appears in the output of your quarto document.
+
+This was a brief supplement to show how R and Python and be used together in quarto documents. To learn more about it, you can read the documentation of [reticulate](https://rstudio.github.io/reticulate/), and of [Python in quarto](https://quarto.org/docs/computations/python.html).

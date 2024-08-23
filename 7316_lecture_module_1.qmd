@@ -16,7 +16,7 @@ number-depth: 5
 
 Unlike spreadsheet applications (like *Excel*) or point-and-click statistical analysis software (like *SPSS*), statistical programming software is based on script files in which users write a series of commands to be performed.
 
-`R` was designed as one of those. By *statistical programming*, we mean that `R` is a programming language designed for statistics. It has a human-readable vocabulary and grammar and needs to be interpreted by your computer through the `R` software. In this course, we will learn the basics of the `R` language.
+`R` was designed as one of those. By *statistical programming*, we mean that `R` is a programming language designed for statistics. It has a human-readable vocabulary and grammar and needs to be interpreted by your computer through the `R` software. In this course, we will learn the basics of `R`.
 
 Statistical programming software brings multiple benefits over point-and-click solutions:
 
@@ -108,11 +108,11 @@ The R interpreter is free software (GNU GPL 2) developed by the *R Core Team* an
 
 Find below direct download links to the R interpreter software:
 
--   For **Windows**: <https://cran.r-project.org/bin/windows/base/R-4.3.1-win.exe>
+-   For **Windows**: <https://cran.r-project.org/bin/windows/base/R-4.4.1-win.exe>
 
--   For macOS 11 (**Big Sur**), with [Apple Arm processors]{.underline}:
+-   For macOS 11 (**Big Sur**), with [Apple silicon]{.underline} (other version available online for older version of Mac):
 
-    <https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.3.1-arm64.pkg>
+    <https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.4.1-arm64.pkg>
 
 -   You probably want to use the version provided in your package manager for Linux. I can help you with this if needed.
 
@@ -188,11 +188,9 @@ If you start a big project, you will soon have many files and folders. It is goo
 
 Usually, you would have something like this:
 
+-   `assets/`
+
 -   `code/`
-
-    -   `data_prep/`
-
-    -   `analysis/`
 
 -   `data/`
 
@@ -200,13 +198,8 @@ Usually, you would have something like this:
 
     -   `derived_data/`
 
--   `assets/`
-
 -   `results/`
 
-    -   `tables/`
-
-    -   `figures/`
 
 **A few essential good practices:**
 
@@ -335,10 +328,10 @@ Use the following command to load the data in your R environment:
 
 ```{r}
 # Dataset in SAS format
-pisa_sas <- rio::import("data/cy07_msu_sch_qqq.sas7bdat")
+pisa_sas <- rio::import("data/7316_module_1_data/cy07_msu_sch_qqq.sas7bdat")
 
 # Dataset in SPSS format
-pisa_spss <- rio::import("data/CY07_MSU_SCH_QQQ.sav")
+pisa_spss <- rio::import("data/7316_module_1_data/CY07_MSU_SCH_QQQ.sav")
 
 ```
 

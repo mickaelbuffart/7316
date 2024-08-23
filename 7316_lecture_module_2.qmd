@@ -658,7 +658,7 @@ Dataframes are probably the most common structure you will use in R. Dataframes 
 
 ```{r}
 # Dataset in SPSS format loaded into R
-pisa_spss <- rio::import("data/CY07_MSU_SCH_QQQ.sav")
+pisa_spss <- rio::import("data/7316_module_2_data/CY07_MSU_SCH_QQQ.sav")
 
 ```
 
@@ -810,8 +810,8 @@ Imagine that you collected data into two different Excel files. They contain the
 
 ```{r}
 # Examples of Excel files to combine
-f1 <- rio::import("./data/dc_1.xlsx")
-f2 <- rio::import("./data/dc_2.xlsx")
+f1 <- rio::import("./data/7316_module_2_data/dc_1.xlsx")
+f2 <- rio::import("./data/7316_module_2_data/dc_2.xlsx")
 
 # Make sure the same column have the same name in both dataframe
 #  In our example, the observation identifier is called different accross

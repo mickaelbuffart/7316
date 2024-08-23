@@ -44,7 +44,7 @@ For example, you can change the type of a vector of elements in a `data.frame`.
 
 ```{r}
 # Loading some data
-df_1 <- rio::import("data/nlsy97.rds")
+df_1 <- rio::import("data/7316_module_5_data/nlsy97.rds")
 
 # These are the factor variable in the data.frame
 factor_vars <- c("personid", "year", 
@@ -515,37 +515,17 @@ stringr::str_trim("an  extra space ")
 **Example:**
 
 ```{r}
+# Provide the URL
+url <- "https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_per_capita"
 
-url <- "https://finance.yahoo.com/quote/AMZN/history"
-
+# Fetch the page
 page <- rvest::read_html(url)
 
+# Extract the tables into a list
 df <- rvest::html_table(page)
 
-
-df <- df[[1]]
-
-
-tech_stock_names <- c("MSFT", "AMZN")
-
-scrape_yahoo <- function(x) {
-  url <- paste0("https://finance.yahoo.com/quote/",
-                x,
-                "/history")
-  html_page <- rvest::html_table(rvest::read_html(url))
-  stock_table <- as.data.frame(html_page)
-  stock_table$stock <- x
-  
-  return(stock_table)
-}
-
-tech_stocks <- scrape_yahoo(tech_stock_names[1])
-
-for (j in 2:length(tech_stock_names)) {
-  tmp <- scrape_yahoo(tech_stock_names[j])
-  
-  tech_stocks <- plyr::rbind.fill(tech_stocks, tmp)
-}
+# Select the table of interest
+df <- df[[2]]
 
 ```
 

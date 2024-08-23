@@ -16,7 +16,7 @@ number-depth: 5
 
 ## Data visualization overview
 
-One of the strong points of R is creating very high-quality data visualization. R is very good at both "static" and interactive data visualization designed for web use. Today, we will cover static data visualization.
+One of the strong points of R is creating very high-quality data visualization. R is very good at both "static" and interactive data visualization designed for web use. Today, we will cover static data visualization. Maps and 3d plots are covered in the module 6.
 
 ## ggplot2 for data visualization
 
@@ -63,7 +63,7 @@ Then, you can plot data. Let's use, for example, `graph_reg.Rds` (available on C
 #| fig-height: 2.25
 #| dpi: 1200
 
-df <- rio::import("data/graph_reg.Rds")
+df <- rio::import("data/7316_module_3_data/graph_reg.Rds")
 
 # Defining data
 ggplot(df) +
